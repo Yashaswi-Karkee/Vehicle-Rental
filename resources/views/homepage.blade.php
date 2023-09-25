@@ -6,7 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
+<style>
+    /* Additional CSS styles */
+    .filter-options {
+        display: none;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        z-index: 999;
+
+        width: 150px;
+
+        /* Adjust the width as needed */
+    }
+</style>
 
 <body class="bg-gray-100 font-sans">
     <!-- Top Navigation Bar -->
@@ -63,14 +79,17 @@
         </div>
     </nav>
     <!-- Main Content -->
-    <main class="p-4 grid grid-cols-1 md:grid-cols-2 justify-between">
+    <main class="p-12 grid grid-cols-1 justify-between">
 
         <!-- Content -->
-        <div class="bg-white shadow-md rounded-lg p-4">
+        <div class="bg-white shadow-md rounded-lg p-12">
             <!-- Search Bar -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4">Search</h2>
-                <div class="flex space-x-4">
+            <div class="mb-1 w-full flex flex-col justify-end">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold mb-4">Search</h2>
+
+                </div>
+                <div class="flex justify-end space-x-4 w-full">
                     <!-- Vehicle Type Dropdown -->
                     <div class="relative">
                         <select
@@ -93,50 +112,91 @@
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
                         Search
                     </button>
+                    <!-- Filter Button -->
+                    <button
+                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4"
+                        id="filterButton">Filter <i class="fas fa-filter ml-2"></i></button>
+                </div>
+            </div>
+
+            <!-- Filter Options (Initially Hidden) -->
+            <div class="flex justify-end w-full">
+                <div class="filter-options" id="filterOptions">
+                    <!-- Add your filter options here as anchor tags -->
+                    <a href="#" class="block mb-2">Option 1</a>
+                    <a href="#" class="block mb-2">Option 2</a>
+                    <!-- Add more filter options as needed -->
                 </div>
             </div>
 
             <!-- Posts Section -->
-            <div>
-                <h2 class="text-xl font-semibold mb-4">All Posts</h2>
+            <div class="mt-7">
+                <h2 class="text-xl font-semibold mb-4">Available Vehicles</h2>
                 <!-- If No Posts Found -->
                 <p class="text-gray-600 mb-4">No posts found.</p>
                 <!-- Sample Post -->
-                <div class="mb-4">
-                    <div class="flex items-center mb-2">
-                        <img src="post-image.jpg" alt="Post Image" class="w-16 h-16 rounded-full object-cover mr-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800">Post Title</h3>
-                            <p class="text-gray-600">Owner: John Doe</p>
-                        </div>
+                <div class="mb-8 bg-white rounded-lg shadow-md max-w-sm p-2">
+                    <img src="post-image.jpg" alt="Post Image" class="w-full h-40 object-cover rounded-t-lg">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Post Title</h3>
+                        <p class="text-gray-600 mb-2">
+                            Lorem ipsum dolor sit amet
+                            consectetur adipisicing elit. Aliquid sit eligendi itaque praesentium culpa consectetur.
+                        </p>
+                        <p class="text-gray-600 mb-2">
+                            <i class="fas fa-bicycle text-indigo-500 mr-2"></i>Cycle
+                        </p>
+                        <p class="text-gray-600 mb-2">
+                            <i class="fas fa-dollar-sign text-indigo-500 mr-2"></i>Rs 500/day
+                        </p>
+                        <p class="text-gray-600 mb-4">
+                            <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available: 5
+                        </p>
+                        <p class="text-gray-600 mb-2">
+                            <i class="fas fa-user text-indigo-500 mr-2"></i>John Doe
+                        </p>
+                        <p class="text-gray-600 mb-2">
+                            <i class="fas fa-phone text-indigo-500 mr-2"></i>9841662237
+                        </p>
+                        <p class="text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>123 Main Street, City, Country
+                        </p>
+                        <button
+                            class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-2">
+                            Order
+                        </button>
                     </div>
-                    <p class="text-gray-600">Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <p class="text-gray-600">Vehicle Type: Cycle</p>
-                    <p class="text-gray-600">Price: $50</p>
-                    <p class="text-gray-600">Quantity Available: 5</p>
-                    <button
-                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
-                        Order
-                    </button>
                 </div>
-                <!-- Add more posts here as needed -->
             </div>
+            <!-- Add more posts here as needed -->
+        </div>
         </div>
     </main>
 </body>
 <script>
     const avtButton = document.querySelector("#avatarButton");
     const menu = document.querySelector('#options');
+    const filterButton = document.getElementById("filterButton");
+    const filterOptions = document.getElementById("filterOptions");
 
     function showMenu() {
-        if (menu.style.display == "none") {
+        if (menu.style.display === "none") {
             menu.style.display = "block";
         } else {
             menu.style.display = "none";
         }
     }
 
+    function toggleFilterOptions() {
+        if (filterOptions.style.display === "none" || filterOptions.style.display === "") {
+            filterOptions.style.display = "block";
+        } else {
+            filterOptions.style.display = "none";
+        }
+    }
+
     avtButton.addEventListener("click", showMenu);
+    filterButton.addEventListener("click", toggleFilterOptions);
 </script>
 
 </html>

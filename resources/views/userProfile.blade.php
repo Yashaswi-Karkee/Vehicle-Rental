@@ -31,7 +31,7 @@
 
             <!-- My Posts Section -->
             <div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">My Posts</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Ride History</h3>
                 <!-- If User Has Posts -->
                 <ul class="space-y-4">
                     <!-- Post Item 1 -->

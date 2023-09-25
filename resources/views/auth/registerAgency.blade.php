@@ -90,11 +90,11 @@
                     </span>
                 </div>
                 <div class="mb-4">
-                    <label for="addresss" class="block text-sm font-medium text-gray-600">Address</label>
-                    <input type="text" id="addresss" name="addresss" value="{{ old('addresss') }}"
+                    <label for="address" class="block text-sm font-medium text-gray-600">Address</label>
+                    <input type="text" id="address" name="address" value="{{ old('address') }}"
                         class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
                     <span class=" text-red-600">
-                        @error('addresss')
+                        @error('address')
                             {{ $message }}
                         @enderror
                     </span>
