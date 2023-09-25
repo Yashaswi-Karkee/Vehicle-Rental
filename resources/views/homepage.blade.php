@@ -67,31 +67,59 @@
 
         <!-- Content -->
         <div class="bg-white shadow-md rounded-lg p-4">
-            <!-- Dashboard Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Card 1 -->
-                <div class="bg-indigo-500 text-white p-4 rounded-lg">
-                    <h3 class="text-xl font-semibold">Total Users</h3>
-                    <p class="text-4xl font-bold mt-2">1,234</p>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="bg-green-500 text-white p-4 rounded-lg">
-                    <h3 class="text-xl font-semibold">Revenue</h3>
-                    <p class="text-4xl font-bold mt-2">$12,345</p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-yellow-500 text-white p-4 rounded-lg">
-                    <h3 class="text-xl font-semibold">Orders</h3>
-                    <p class="text-4xl font-bold mt-2">567</p>
+            <!-- Search Bar -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Search</h2>
+                <div class="flex space-x-4">
+                    <!-- Vehicle Type Dropdown -->
+                    <div class="relative">
+                        <select
+                            class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring"
+                            id="vehicleType">
+                            <option value="cycle">Cycle</option>
+                            <option value="two-wheeler">Two-Wheeler</option>
+                            <option value="four-wheeler">Four-Wheeler</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.293 11.293a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414L10 12.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 010-1.414z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- Search Button -->
+                    <button
+                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
+                        Search
+                    </button>
                 </div>
             </div>
 
-            <!-- Charts -->
-            <div class="mt-8">
-                <!-- Add charts or data visualization here -->
-                <p class="text-gray-600">Add charts here...</p>
+            <!-- Posts Section -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4">All Posts</h2>
+                <!-- If No Posts Found -->
+                <p class="text-gray-600 mb-4">No posts found.</p>
+                <!-- Sample Post -->
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <img src="post-image.jpg" alt="Post Image" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Post Title</h3>
+                            <p class="text-gray-600">Owner: John Doe</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p class="text-gray-600">Vehicle Type: Cycle</p>
+                    <p class="text-gray-600">Price: $50</p>
+                    <p class="text-gray-600">Quantity Available: 5</p>
+                    <button
+                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
+                        Order
+                    </button>
+                </div>
+                <!-- Add more posts here as needed -->
             </div>
         </div>
     </main>
