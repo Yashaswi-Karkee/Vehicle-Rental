@@ -26,7 +26,7 @@ Route::post('/register-User', [CustomizedController::class, 'registerUser'])->na
 Route::post('/register-Agency', [CustomizedController::class, 'registerAgency'])->name('register-Agency');
 Route::get('/logout', [CustomizedController::class, 'logout'])->name('logout');
 
-Route::get('/profile', [CustomizedController::class, 'profile'])->middleware('isLoggedIn')->name('profile');
+Route::get('/settings', [CustomizedController::class, 'settings'])->middleware('isLoggedIn')->name('settings');
 Route::put('/profile-edit/{email}', [CustomizedController::class, 'updateProfile'])->middleware('isLoggedIn')->name('update.profile');
 Route::get('/profile-edit', [CustomizedController::class, 'editProfile'])->middleware('isLoggedIn')->name('edit.profile');
 
@@ -37,6 +37,8 @@ Route::get('/password-reset/{token}', [CustomizedController::class, 'passwordRes
 Route::post('/password-reset', [CustomizedController::class, 'passwordResetPost'])->name('password.reset.post');
 Route::delete('/delete-account/{email}', [CustomizedController::class, 'deleteAccount'])->name('delete.account');
 Route::put('/update-password/{email}', [CustomizedController::class, 'updatePassword'])->name('update.password');
+
+
 
 Route::get('/show-posts-agency', [CustomizedController::class, 'showPostsAgency'])->name('show.posts.agency');
 

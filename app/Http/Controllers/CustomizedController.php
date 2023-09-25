@@ -63,16 +63,16 @@ class CustomizedController extends Controller
 
     }
 
-    public function profile()
+    public function settings()
     {
         $data1 = array();
         $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
         if ($data1) {
-            return view("auth.profile", compact('data1'));
+            return view("auth.settings", compact('data1'));
         } else {
             $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
             if ($data1) {
-                return view("auth.profile", compact('data1'));
+                return view("auth.settings", compact('data1'));
             }
         }
 
@@ -347,7 +347,7 @@ class CustomizedController extends Controller
             $temp1->email = $request->email;
 
             $temp1->update();
-            return redirect()->to(route('profile'))->with('success', 'Details Changed!');
+            return redirect()->to(route('settings'))->with('success', 'Details Changed!');
 
         } else {
 
@@ -385,7 +385,7 @@ class CustomizedController extends Controller
             $temp2->longitude = $request->longitude;
 
             $temp2->update();
-            return redirect()->to(route('profile'))->with('success', 'Details Changed!');
+            return redirect()->to(route('settings'))->with('success', 'Details Changed!');
 
         }
 

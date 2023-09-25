@@ -32,18 +32,18 @@
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                         style="display: none" id="options">
                         <div class="py-1">
-                            <a href="{{ route('profile') }}"
+                            <a href="#"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Profile</a>
                             @if ($data->latitude)
-                                <a href="{{ route('show.my.ads') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
-                                    Posts</a>
                                 <a href="#"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
                             @else
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
                                     Rides</a>
                             @endif
+                            <a href="{{ route('settings') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Settings</a>
+
 
                             <a href="{{ route('logout') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Logout</a>

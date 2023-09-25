@@ -71,7 +71,7 @@
                 </div>
             </form>
             <div class="mb-4 flex">
-                <a href="{{ route('profile') }}"
+                <a href="{{ route('settings') }}"
                     class="w-full text-center py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition duration-300">Go
                     Back</a>
             </div>
