@@ -57,7 +57,6 @@
                     <label for="image"
                         class="relative rounded-full h-full w-full mb-4 cursor-pointer flex justify-center">
                         <input type="file" id="image" name="image" hidden onchange="displayImage(this)">
-
                         <div class="bg-gray-300 rounded-full w-32 h-32 flex items-center justify-center">
                             <div class="text-4xl text-gray-600">+</div>
                         </div>
@@ -86,6 +85,26 @@
                         class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
                     <span class=" text-red-600">
                         @error('email')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+                    <label for="addresss" class="block text-sm font-medium text-gray-600">Address</label>
+                    <input type="text" id="addresss" name="addresss" value="{{ old('addresss') }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('addresss')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+                    <label for="contact" class="block text-sm font-medium text-gray-600">Contact Number</label>
+                    <input type="number" id="contact" name="contact" value="{{ old('contact') }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('contact')
                             {{ $message }}
                         @enderror
                     </span>
@@ -156,6 +175,12 @@
         }
     }
 
+    var lat = document.getElementById('latitude');
+    var long = document.getElementById('longitude');
+    if (lat.value == "") {
+        console.log('hi');
+    }
+
     function GetMap() {
 
         var map = new Microsoft.Maps.Map('#myMap', {
@@ -163,6 +188,35 @@
             mapTypeId: Microsoft.Maps.MapTypeId.aerial,
             zoom: 15,
         });
+
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var center = new Microsoft.Maps.Location(
+                position.coords.latitude,
+                position.coords.longitude
+            );
+            if (lat.value == "") {
+
+                lat.value = center.latitude;
+                long.value = center.longitude;
+            } else {
+                center.latitude = lat.value;
+                center.longitude = long.value;
+            }
+            // Add a pushpin at the user 's location.
+            var pin = new Microsoft.Maps.Pushpin(center, {
+                'draggable': true
+            });
+            map.entities.push(pin);
+            // Center the map on the user's location.
+
+            map.setView({
+                center: center,
+                zoom: 15
+            });
+        });
+
+
 
 
         Microsoft.Maps.Events.addHandler(map, 'click', getLatlng);

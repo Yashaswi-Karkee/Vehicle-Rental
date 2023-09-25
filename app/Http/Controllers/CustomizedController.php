@@ -145,6 +145,8 @@ class CustomizedController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
+            'address' => 'required',
+            'contact' => 'required|max:10',
             'image' => 'required|mimes:png,jpg,jpeg,svg,gif|max:5048|image'
         ]);
 
@@ -159,6 +161,8 @@ class CustomizedController extends Controller
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->contact = $request->contact;
+            $user->address = $request->address;
             $user->password = Hash::make($request->password);
             $user->profile_pic = $newImgName;
 
@@ -180,6 +184,8 @@ class CustomizedController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
             'image' => 'required|mimes:png,jpg,jpeg,svg,gif|max:5048|image',
+            'address' => 'required',
+            'contact' => 'required|max:10',
             'latitude' => 'required',
             'longitude' => 'required'
         ]);
@@ -195,6 +201,8 @@ class CustomizedController extends Controller
             $user = new Agency();
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->contact = $request->contact;
+            $user->address = $request->address;
             $user->password = Hash::make($request->password);
             $user->profile_pic = $newImgName;
             $user->latitude = $request->latitude;

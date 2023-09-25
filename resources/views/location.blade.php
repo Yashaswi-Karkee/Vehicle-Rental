@@ -45,7 +45,7 @@
             }
         }
 
-        //Request the user's location
+        // Request the user's location
         // navigator.geolocation.getCurrentPosition(function(position) {
         //         var loc = new Microsoft.Maps.Location(
         //             position.coords.latitude,
@@ -57,7 +57,7 @@
         // });
         // map.entities.push(pin);
 
-        //Center the map on the user's location.
+        // Center the map on the user's location.
         // map.setView({
         //     center: loc,
         //     zoom: 15

@@ -129,11 +129,15 @@
                 </form>
 
                 <!-- Delete Account Button -->
-                <div class="mt-4 flex">
-                    <a href="{{ route('delete.account', $data1->email) }}"
-                        class="w-full text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition duration-300">Delete
-                        Account</a>
-                </div>
+                <form action="{{ route('delete.account', $data1->email) }}" method="POST">
+                    @method('delete')
+                    @csrf
+                    <div class="mt-4 flex">
+                        <button type="submit"
+                            class="w-full text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition duration-300">Delete
+                            Account</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
