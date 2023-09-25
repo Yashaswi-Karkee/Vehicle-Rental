@@ -39,12 +39,8 @@ Route::delete('/delete-account/{email}', [CustomizedController::class, 'deleteAc
 Route::put('/update-password/{email}', [CustomizedController::class, 'updatePassword'])->name('update.password');
 
 
+Route::get('/user-profile/{email}', [CustomizedController::class, 'showUserProfile'])->middleware('isLoggedIn')->name('user.profile.show');
 
-Route::get('/show-posts-agency', [CustomizedController::class, 'showPostsAgency'])->name('show.posts.agency');
+Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
 
-Route::get('/location', [CustomizedController::class, 'location'])->name('location');
-
-Route::get('/myAds', [CustomizedController::class, 'showMyAds'])->name('show.my.ads');
-
-
-// Route::controller(CustomizedController\)
+// Route::get('/location', [CustomizedController::class, 'location'])->name('location');

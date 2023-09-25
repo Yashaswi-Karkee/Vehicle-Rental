@@ -35,14 +35,14 @@ class CustomizedController extends Controller
         return view("auth.registerAgency");
     }
 
-    public function showMyAds()
+    public function showRequestList()
     {
         if (Posts::exists()) {
 
             $data = Posts::all();
-            return view("myAds", compact('data'));
+            return view("requestLists", compact('data'));
         } else {
-            return view("myAds", compact('data'));
+            return view("requestLists", compact('data'));
         }
     }
 
@@ -61,6 +61,11 @@ class CustomizedController extends Controller
             }
         }
 
+    }
+
+    public function showUserProfile($email)
+    {
+        return view('userProfile');
     }
 
     public function settings()
