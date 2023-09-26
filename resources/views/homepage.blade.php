@@ -141,7 +141,7 @@
                     @foreach ($post as $p)
                         <!-- Sample Post -->
                         <div class="mb-8 bg-white rounded-lg shadow-md max-w-sm p-2">
-                            <img src="{{ asset('posts_pic/' . $p->image) }}" alt="Post Image"
+                            <img src="{{ asset('posts_pic/' . $p->pic) }}" alt="Post Image"
                                 class="w-full h-40 object-cover rounded-t-lg">
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ $p->title }}</h3>

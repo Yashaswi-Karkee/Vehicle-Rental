@@ -62,7 +62,7 @@
                             <div class="mb-4 rounded-lg p-4 flex items-center shadow-lg">
                                 <!-- Post Image (Left) -->
                                 <div class="w-1/4">
-                                    <img src="{{ asset('posts_pic/' . $p->image) }}" alt="Post Image"
+                                    <img src="{{ asset('posts_pic/' . $p->pic) }}" alt="Post Image"
                                         class="w-full h-auto rounded-lg">
                                 </div>
                                 <!-- Post Details (Right) -->
