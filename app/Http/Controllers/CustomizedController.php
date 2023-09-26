@@ -368,7 +368,12 @@ class CustomizedController extends Controller
             return redirect('logout');
         } else {
             $user = Agency::where('email', '=', $email);
+            $post = Posts::where('agencyEmail', '=', $email)->get();
+            foreach ($post as $p)
+                $p->delete();
+
             $user->delete();
+
             return redirect('logout');
         }
     }
@@ -402,6 +407,10 @@ class CustomizedController extends Controller
 
         }
     }
+
+
+
+
 
 
 
