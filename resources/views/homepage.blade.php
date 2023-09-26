@@ -196,6 +196,7 @@
     }
 
     avtButton.addEventListener("click", showMenu);
+
     filterButton.addEventListener("click", toggleFilterOptions);
 </script>
 
