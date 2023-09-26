@@ -113,15 +113,16 @@
                         Search
                     </button>
                     <!-- Filter Button -->
-                    <button
+                    <button onclick="toggleFilterOptions()"
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4"
-                        id="filterButton">Filter<i class="fas fa-filter ml-2"></i></button>
+                        id="filterButton">Filter<i class="fas fa-filter ml-2"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- Filter Options (Initially Hidden) -->
             <div class="flex justify-end w-full">
-                <div class="filter-options" id="filterOptions">
+                <div class="filter-options pt-4 pl-4" id="filterOptions">
                     <!-- Add your filter options here as anchor tags -->
                     <a href="#" class="block mb-2">Option 1</a>
                     <a href="#" class="block mb-2">Option 2</a>
@@ -181,9 +182,6 @@
 <script type="text/javascript">
     const avtButton = document.querySelector("#avatarButton");
     const menu = document.querySelector('#options');
-    const filterButton = document.getElementById("filterButton");
-    const filterOptions = document.getElementById("filterOptions");
-    console.log(filterOptions.style.display);
     var lat = document.getElementById('latitude');
     var long = document.getElementById('longitude');
 
@@ -210,19 +208,15 @@
     }
 
     function toggleFilterOptions() {
-
-        if (filterOptions.style.display === "block") {
-            console.log('hi');
-            filterOptions.style.display = "none";
+        const filterOpt = document.querySelector("#filterOptions");
+        if (filterOpt.style.display === "block") {
+            filterOpt.style.display = "none";
         } else {
-            console.log('hello');
-            filterOptions.style.display = "block";
+            filterOpt.style.display = "block";
         }
     }
 
     avtButton.addEventListener("click", showMenu);
-
-    filterButton.addEventListener("click", toggleFilterOptions);
 </script>
 <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
 
