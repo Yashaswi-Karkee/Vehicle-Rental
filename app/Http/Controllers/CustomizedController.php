@@ -295,9 +295,17 @@ class CustomizedController extends Controller
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
             ]);
             if ($request->hasFile('image')) {
-                $image_path = "/images/$temp1->profile_pic"; // Value is not URL but directory file path
+                $image_path = public_path("profile_pictures/{$temp1->profile_pic}");
+
+                // Check if the image file exists before attempting deletion
                 if (File::exists($image_path)) {
-                    File::delete($image_path);
+                    try {
+                        // Delete the existing image
+                        File::delete($image_path);
+                    } catch (\Exception $e) {
+                        // Handle any exceptions that occur during deletion
+                        return back()->with('fail', 'Error deleting the existing image.');
+                    }
                 }
                 $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
                 $request->image->move(public_path('profile_pictures'), $newImgName);
@@ -362,17 +370,54 @@ class CustomizedController extends Controller
     //Delete Account
     public function deleteAccount($email)
     {
-        $user = User::where('email', '=', $email);
+        $user = User::where('email', '=', $email)->first();
         if ($user) {
-            dd($user);
+            $image_path = public_path("profile_pictures/{$user->profile_pic}");
+
+            // Check if the image file exists before attempting deletion
+            if (File::exists($image_path)) {
+                try {
+                    // Delete the existing image
+                    File::delete($image_path);
+                } catch (\Exception $e) {
+                    // Handle any exceptions that occur during deletion
+                    return back()->with('fail', 'Error deleting the existing image.');
+                }
+            }
             $user->delete();
             return redirect('logout');
         } else {
-            // dd($user);
-            $user = Agency::where('email', '=', $email);
+            $user = Agency::where('email', '=', $email)->first();
             $post = Posts::where('agencyEmail', '=', $email)->get();
-            foreach ($post as $p)
+            $image_path = public_path("profile_pictures/{$user->profile_pic}");
+
+            // Check if the image file exists before attempting deletion
+            if (File::exists($image_path)) {
+                try {
+                    // Delete the existing image
+                    File::delete($image_path);
+                } catch (\Exception $e) {
+                    // Handle any exceptions that occur during deletion
+                    return back()->with('fail', 'Error deleting the existing image.');
+                }
+            }
+
+            foreach ($post as $p) {
+
+                $image_path = public_path("posts_pic/{$p->pic}");
+
+                // Check if the image file exists before attempting deletion
+                if (File::exists($image_path)) {
+                    try {
+                        // Delete the existing image
+                        File::delete($image_path);
+                    } catch (\Exception $e) {
+                        // Handle any exceptions that occur during deletion
+                        return back()->with('fail', 'Error deleting the existing image.');
+                    }
+                }
                 $p->delete();
+            }
 
             $user->delete();
 
