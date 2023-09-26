@@ -18,8 +18,9 @@
     <!-- Post Form -->
     <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Create Post</h2>
-        <form action="{{ route('create.post.post', $email) }}" method="POST">
+        <form action="{{ route('create.post.post', $email) }}" method="POST" enctype="multipart/form-data">
             <!-- Post Title -->
+            @csrf
             <div class="mb-4">
                 <label for="title" class="block text-gray-700 font-semibold mb-2">Title</label>
                 <input type="text" id="title" name="title" value="{{ old('title') }}"
