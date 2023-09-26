@@ -115,7 +115,7 @@
                     <!-- Filter Button -->
                     <button
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4"
-                        id="filterButton">Filter <i class="fas fa-filter ml-2"></i></button>
+                        id="filterButton">Filter<i class="fas fa-filter ml-2"></i></button>
                 </div>
             </div>
 
@@ -178,11 +178,12 @@
         </div>
     </main>
 </body>
-<script>
+<script type="text/javascript">
     const avtButton = document.querySelector("#avatarButton");
     const menu = document.querySelector('#options');
     const filterButton = document.getElementById("filterButton");
     const filterOptions = document.getElementById("filterOptions");
+    console.log(filterOptions.style.display);
     var lat = document.getElementById('latitude');
     var long = document.getElementById('longitude');
 
@@ -209,10 +210,13 @@
     }
 
     function toggleFilterOptions() {
-        if (filterOptions.style.display === "none" || filterOptions.style.display === "") {
-            filterOptions.style.display = "block";
-        } else {
+
+        if (filterOptions.style.display === "block") {
+            console.log('hi');
             filterOptions.style.display = "none";
+        } else {
+            console.log('hello');
+            filterOptions.style.display = "block";
         }
     }
 
