@@ -18,6 +18,14 @@
             <a class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" href="{{ route('homepage') }}">
                 <i class="fas fa-times text-2xl"></i>
             </a>
+            @if (Session::has('success'))
+                <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
+                    {{ Session::get('success') }}</div>
+            @endif
+            @if (Session::has('fail'))
+                <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    {{ Session::get('fail') }}</div>
+            @endif
             <!-- User Profile Content -->
             <div id="profileContent" class="w-full block">
                 <!-- User Profile Header -->
@@ -85,7 +93,7 @@
                 </div>
                 <div class="flex justify-end py-4">
 
-                    <a href="{{ route('create.post.get') }}"
+                    <a href="{{ route('create.post.get', $data->email) }}"
                         class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300">Create
                         Post</a>
                 </div>

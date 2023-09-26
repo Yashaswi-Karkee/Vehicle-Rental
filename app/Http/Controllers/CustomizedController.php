@@ -409,6 +409,50 @@ class CustomizedController extends Controller
 
     }
 
+    //CRUD for Posts
+
+    public function createPostGet($email)
+    {
+        return view('posts.createPosts', compact('email'));
+    }
+    public function createPostPost(Request $request, $email)
+    {
+        $temp1 = Agency::where('email', '=', $email)->first();
+        if ($temp1) {
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'type' => 'required',
+                'price' => 'required',
+                'quantity' => 'required',
+                'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image|required',
+            ]);
+
+            $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+            $request->image->move(public_path('profile_pictures'), $newImgName);
+            $post = new Posts();
+
+            $post->pic = $newImgName;
+            $post->title = $request->title;
+            $post->agencyEmail = $email;
+            $post->description = $request->description;
+            $post->type = $request->type;
+            $post->rate = $request->price;
+            $post->quantity = $request->tquantity;
+            $post->latitude = $temp1->latitude;
+            $post->longitude = $temp1->longitude;
+
+            $post->save();
+            return back()->with('success', 'Post Created!');
+
+        } else {
+
+            return back()->with('fail', 'Something went wrong!');
+
+        }
+
+    }
+
 
 
     //DELETE methods
