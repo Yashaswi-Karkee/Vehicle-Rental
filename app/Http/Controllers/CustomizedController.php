@@ -20,32 +20,7 @@ use File;
 class CustomizedController extends Controller
 {
 
-    // GET Methods
-    public function login()
-    {
-        return view("auth.loginPage");
-    }
-
-    public function registrationUser()
-    {
-        return view("auth.registerUser");
-    }
-    public function registrationAgency()
-    {
-        return view("auth.registerAgency");
-    }
-
-    public function showRequestList()
-    {
-        if (Posts::exists()) {
-
-            $data = Posts::all();
-            return view("requestLists", compact('data'));
-        } else {
-            return view("requestLists", compact('data'));
-        }
-    }
-
+    //HomePage View
     public function homepage()
     {
         $data = array();
@@ -71,72 +46,35 @@ class CustomizedController extends Controller
 
     }
 
-    public function showUserProfile($email)
+
+
+
+
+
+
+
+
+
+
+
+    // Login functions
+    // Get Login view
+    public function login()
     {
-        if (Session::has('loginEmail') && $email == Session::get('loginEmail')) {
-            $temp2 = 1;
-        } else {
-            $temp2 = 0;
-        }
-        $check = Posts::where('agencyEmail', '=', $email)->first();
-        if (is_null($check)) {
-            $temp1 = 1;
-            $post = null;
-        } else {
-            $temp1 = 0;
-            $post = Posts::where('agencyEmail', '=', $email)->get();
-        }
-        $data = Agency::where('email', '=', $email)->first();
-        if ($data) {
-            return view('userProfile', compact('data', 'temp1', 'temp2', 'post'));
-        } else {
-            return back()->with('fail', 'Some error occured!');
-        }
+        return view("auth.loginPage");
     }
 
-    public function settings()
+    //Logout function
+    public function logout()
     {
-        $data1 = array();
-        $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
-        if ($data1) {
-            return view("auth.settings", compact('data1'));
-        } else {
-            $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data1) {
-                return view("auth.settings", compact('data1'));
-            }
+        if (Session::has('loginEmail')) {
+            Session::pull('loginEmail');
+            return redirect()->to(route('homepage'))->with('success', 'Successfully logged out!');
         }
-
+        return back()->with('fail', 'Login first');
     }
 
-    public function editProfile()
-    {
-        $data1 = array();
-        $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
-        if ($data1) {
-            return view("auth.profileEditUser", compact('data1'));
-        } else {
-            $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data1) {
-                return view("auth.profileEditAgency", compact('data1'));
-            }
-        }
-
-    }
-
-
-    public function emailVerifyGet()
-    {
-        return view('auth.emailVerify');
-    }
-
-    public function passwordResetGet($token)
-    {
-        return view('auth.changePassword', compact('token'));
-    }
-
-
-    //POST Methods
+    //Login Verification
     public function loginUser(Request $request)
     {
         $request->validate([
@@ -169,6 +107,32 @@ class CustomizedController extends Controller
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    //Register User Functions
+    //Register User view
+    public function registrationUser()
+    {
+        return view("auth.registerUser");
+    }
+
+    //Register Agency view
+    public function registrationAgency()
+    {
+        return view("auth.registerAgency");
+    }
+
+    //Register User Verification
     public function registerUser(Request $request): RedirectResponse
     {
 
@@ -204,10 +168,9 @@ class CustomizedController extends Controller
                 return back()->with('fail', 'Something went wrong');
             }
         }
-
-
     }
 
+    //Register Agency Verification
     public function registerAgency(Request $request)
     {
         $request->validate([
@@ -248,111 +211,77 @@ class CustomizedController extends Controller
         }
     }
 
-    public function emailVerifyPost(Request $request)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Settings and Profile Functions
+    //User Profile View
+    public function showUserProfile($email)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        $temp1 = User::where('email', '=', $request->email)->first();
-        $temp2 = Agency::where('email', '=', $request->email)->first();
-
-
-        if ($temp1 || $temp2) {
-
-            $token = Str::random(64);
-            DB::table('password_reset_tokens')->insert([
-                'email' => $request->email,
-                'token' => $token,
-                'created_at' => Carbon::now()
-            ]);
-            Mail::send('emails.forgotPass', ['token' => $token], function ($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('Reset Password');
-            });
-
-            return redirect()->to(route('email.verify.get'))->with('success', 'Please check your inbox');
-        }
-
-        return back()->with('fail', 'Please enter registered Email');
-    }
-
-    public function passwordResetPost(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-        $temp1 = User::where('email', '=', $request->email)->first();
-        $temp2 = Agency::where('email', '=', $request->email)->first();
-
-        $data = DB::table('password_reset_tokens')->where([
-            'email' => $request->email,
-            'token' => $request->token
-        ])->first();
-
-        if ($data && $temp1) {
-            User::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
-            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
-            return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
-        } else if ($data && $temp2) {
-
-            Agency::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
-            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
-            return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
+        if (Session::has('loginEmail') && $email == Session::get('loginEmail')) {
+            $temp2 = 1;
         } else {
-            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
-            return back()->with('fail', 'Please try again');
+            $temp2 = 0;
         }
-
-    }
-
-    public function logout()
-    {
-        if (Session::has('loginEmail')) {
-            Session::pull('loginEmail');
-            return redirect()->to(route('homepage'))->with('success', 'Successfully logged out!');
-        }
-        return back()->with('fail', 'Login first');
-    }
-
-
-
-    public function location()
-    {
-        return view('location');
-    }
-
-    //UPDATE Methods
-    public function updatePassword(Request $request, $email)
-    {
-        $request->validate([
-            'current' => 'required',
-            'password' => 'required|min:8|confirmed'
-        ]);
-        $temp1 = User::where('email', '=', $email)->first();
-        $temp2 = Agency::where('email', '=', $email)->first();
-
-        if ($temp1) {
-            if (Hash::check($request->current, $temp1->password)) {
-                $temp1->password = Hash::make($request->password);
-                $temp1->update();
-                return back()->with('success', 'Password Changed!');
-            } else {
-                return back()->with('fail', 'Old Password is incorrect');
-            }
+        $check = Posts::where('agencyEmail', '=', $email)->first();
+        if (is_null($check)) {
+            $temp1 = 1;
+            $post = null;
         } else {
-            if (Hash::check($request->current, $temp2->password)) {
-                $temp2->password = Hash::make($request->password);
-                $temp2->update();
-                return back()->with('success', 'Password Changed!');
-            } else {
-                return back()->with('fail', 'Old Password is incorrect');
-            }
-
+            $temp1 = 0;
+            $post = Posts::where('agencyEmail', '=', $email)->get();
+        }
+        $data = Agency::where('email', '=', $email)->first();
+        if ($data) {
+            return view('userProfile', compact('data', 'temp1', 'temp2', 'post'));
+        } else {
+            return back()->with('fail', 'Some error occured!');
         }
     }
 
+    //Show settings view
+    public function settings()
+    {
+        $data1 = array();
+        $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
+        if ($data1) {
+            return view("auth.settings", compact('data1'));
+        } else {
+            $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
+            if ($data1) {
+                return view("auth.settings", compact('data1'));
+            }
+        }
+
+    }
+
+    //Edit and Update Profile Get
+    public function editProfile()
+    {
+        $data1 = array();
+        $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
+        if ($data1) {
+            return view("auth.profileEditUser", compact('data1'));
+        } else {
+            $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
+            if ($data1) {
+                return view("auth.profileEditAgency", compact('data1'));
+            }
+        }
+
+    }
+
+    //Update Profile POST
     public function updateProfile(Request $request, $email)
     {
         $temp1 = User::where('email', '=', $email)->first();
@@ -430,12 +359,161 @@ class CustomizedController extends Controller
 
     }
 
-    //CRUD for Posts
+    //Delete Account
+    public function deleteAccount($email)
+    {
+        $user = User::where('email', '=', $email);
+        if ($user) {
+            $user->delete();
+            return redirect('logout');
+        } else {
+            $user = Agency::where('email', '=', $email);
+            $user->delete();
+            return redirect('logout');
+        }
+    }
 
+    //Update password code
+    public function updatePassword(Request $request, $email)
+    {
+        $request->validate([
+            'current' => 'required',
+            'password' => 'required|min:8|confirmed'
+        ]);
+        $temp1 = User::where('email', '=', $email)->first();
+        $temp2 = Agency::where('email', '=', $email)->first();
+
+        if ($temp1) {
+            if (Hash::check($request->current, $temp1->password)) {
+                $temp1->password = Hash::make($request->password);
+                $temp1->update();
+                return back()->with('success', 'Password Changed!');
+            } else {
+                return back()->with('fail', 'Old Password is incorrect');
+            }
+        } else {
+            if (Hash::check($request->current, $temp2->password)) {
+                $temp2->password = Hash::make($request->password);
+                $temp2->update();
+                return back()->with('success', 'Password Changed!');
+            } else {
+                return back()->with('fail', 'Old Password is incorrect');
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Forget Password functions
+    //Email Verifiation view
+    public function emailVerifyGet()
+    {
+        return view('auth.emailVerify');
+    }
+
+    //Password change view
+    public function passwordResetGet($token)
+    {
+        return view('auth.changePassword', compact('token'));
+    }
+
+    //email verification for sending mail
+    public function emailVerifyPost(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $temp1 = User::where('email', '=', $request->email)->first();
+        $temp2 = Agency::where('email', '=', $request->email)->first();
+
+
+        if ($temp1 || $temp2) {
+
+            $token = Str::random(64);
+            DB::table('password_reset_tokens')->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+            Mail::send('emails.forgotPass', ['token' => $token], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('Reset Password');
+            });
+
+            return redirect()->to(route('email.verify.get'))->with('success', 'Please check your inbox');
+        }
+
+        return back()->with('fail', 'Please enter registered Email');
+    }
+
+    //Function to reset the password
+    public function passwordResetPost(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+        $temp1 = User::where('email', '=', $request->email)->first();
+        $temp2 = Agency::where('email', '=', $request->email)->first();
+
+        $data = DB::table('password_reset_tokens')->where([
+            'email' => $request->email,
+            'token' => $request->token
+        ])->first();
+
+        if ($data && $temp1) {
+            User::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
+            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
+            return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
+        } else if ($data && $temp2) {
+
+            Agency::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
+            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
+            return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
+        } else {
+            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
+            return back()->with('fail', 'Please try again');
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Functions for Posts
+    //Get view for Creating Posts
     public function createPostGet($email)
     {
         return view('posts.createPosts', compact('email'));
     }
+
+    //Actual code to create a post
     public function createPostPost(Request $request, $email)
     {
         $temp1 = Agency::where('email', '=', $email)->first();
@@ -477,20 +555,21 @@ class CustomizedController extends Controller
 
 
 
-    //DELETE methods
 
-    public function deleteAccount($email)
-    {
-        $user = User::where('email', '=', $email);
-        if ($user) {
-            $user->delete();
-            return redirect('logout');
-        } else {
-            $user = Agency::where('email', '=', $email);
-            $user->delete();
-            return redirect('logout');
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Code for practising
 
     // public function location()
     // {
@@ -498,5 +577,20 @@ class CustomizedController extends Controller
     //     $data = Location::get('113.199.231.69');
     //     dd($data);
     //     return view('location', compact('data'));
+    // }
+
+    // public function location()
+    // {
+    //     return view('location');
+    // }
+    // public function showRequestList()
+    // {
+    //     if (Posts::exists()) {
+
+    //         $data = Posts::all();
+    //         return view("requestLists", compact('data'));
+    //     } else {
+    //         return view("requestLists", compact('data'));
+    //     }
     // }
 }
