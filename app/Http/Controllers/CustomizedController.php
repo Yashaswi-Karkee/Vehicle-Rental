@@ -49,15 +49,23 @@ class CustomizedController extends Controller
     public function homepage()
     {
         $data = array();
+        $check = array();
+        $check = Posts::first();
+        if (is_null($check)) {
+            $temp = 1;
+        } else {
+            $temp = 0;
+            $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
+        }
         $data = User::where('email', '=', Session::get('loginEmail'))->first();
         if ($data) {
-            return view("homepage", compact('data'));
+            return view("homepage", compact('data', 'temp', 'post'));
         } else {
             $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
             if ($data) {
-                return view("homepage", compact('data'));
+                return view("homepage", compact('data', 'temp', 'post'));
             } else {
-                return view('homepage', compact('data'));
+                return view('homepage', compact('data', 'temp', 'post'));
             }
         }
 
@@ -65,9 +73,22 @@ class CustomizedController extends Controller
 
     public function showUserProfile($email)
     {
+        if (Session::has('loginEmail') && $email == Session::get('loginEmail')) {
+            $temp2 = 1;
+        } else {
+            $temp2 = 0;
+        }
+        $check = Posts::where('agencyEmail', '=', $email)->first();
+        if (is_null($check)) {
+            $temp1 = 1;
+            $post = null;
+        } else {
+            $temp1 = 0;
+            $post = Posts::where('agencyEmail', '=', $email)->get();
+        }
         $data = Agency::where('email', '=', $email)->first();
         if ($data) {
-            return view('userProfile', compact('data'));
+            return view('userProfile', compact('data', 'temp1', 'temp2', 'post'));
         } else {
             return back()->with('fail', 'Some error occured!');
         }
@@ -428,7 +449,7 @@ class CustomizedController extends Controller
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image|required',
             ]);
 
-            $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+            $newImgName = time() . "-" . $request->title . '.' . $request->image->extension();
             $request->image->move(public_path('posts_pic'), $newImgName);
             $post = new Posts();
 

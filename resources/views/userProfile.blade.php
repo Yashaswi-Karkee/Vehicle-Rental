@@ -18,14 +18,7 @@
             <a class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" href="{{ route('homepage') }}">
                 <i class="fas fa-times text-2xl"></i>
             </a>
-            @if (Session::has('success'))
-                <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
-                    {{ Session::get('success') }}</div>
-            @endif
-            @if (Session::has('fail'))
-                <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                    {{ Session::get('fail') }}</div>
-            @endif
+
             <!-- User Profile Content -->
             <div id="profileContent" class="w-full block">
                 <!-- User Profile Header -->
@@ -58,46 +51,67 @@
                 </div>
             </div>
             <!-- Ride Request Content -->
-            <div id="rideRequestContent" class="w-full pl-4" style="display: none;">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">My Posts</h3>
-                <!-- Sample Post -->
-                <div class="mb-4 rounded-lg p-4 flex items-center shadow-lg">
-                    <!-- Post Image (Left) -->
-                    <div class="w-1/4">
-                        <img src="post-image.jpg" alt="Post Image" class="w-full h-auto rounded-lg">
+            <div id="rideRequestContent" class="w-full pl-4" style="display: none;height:90vh ">
+                <h3 class="text-lg font-semibold text-gray-800 mb-8 mt-4">My Posts</h3>
+                @if ($temp1 == 1)
+                    <p class="text-gray-600 mb-4">No posts found.</p>
+                @else
+                    <div style="overflow-y: scroll; height:70vh">
+                        @foreach ($post as $p)
+                            <!-- Sample Post -->
+                            <div class="mb-4 rounded-lg p-4 flex items-center shadow-lg">
+                                <!-- Post Image (Left) -->
+                                <div class="w-1/4">
+                                    <img src="{{ asset('posts_pic/' . $p->image) }}" alt="Post Image"
+                                        class="w-full h-auto rounded-lg">
+                                </div>
+                                <!-- Post Details (Right) -->
+                                <div class="w-3/4 pl-4">
+                                    <!-- Post Title -->
+                                    <h4 class="text-md font-semibold text-gray-800 mb-2">{{ $p->title }}</h4>
+                                    <!-- Post Description -->
+                                    <p class="text-gray-600 mb-2">{{ $p->description }}
+                                    </p>
+                                    <!-- Post Quantity -->
+                                    <p class="text-gray-600 mb-2"><strong>Quantity:</strong> {{ $p->quantity }}</p>
+                                    <!-- Post Price -->
+                                    <p class="text-gray-600 mb-2"><strong>Price:</strong> Rs {{ $p->rate }}/day
+                                    </p>
+                                    <!-- Post Type -->
+                                    @if ($p->type == 'Cycle')
+                                        <p class="text-gray-600 mb-2"><strong>Type:</strong> Cycle</p>
+                                    @elseif ($p->type == '2WD')
+                                        <p class="text-gray-600 mb-2"><strong>Type:</strong> 2 Wheeler</p>
+                                    @else
+                                        <p class="text-gray-600 mb-2"><strong>Type:</strong> 4 Wheeler</p>
+                                    @endif
+                                    @if ($temp2 == 1)
+                                        <!-- Edit and Delete Icons  -->
+                                        <div class="flex justify-end space-x-4">
+                                            <!-- Edit Icon -->
+                                            <button class="text-indigo-500 hover:text-indigo-700 focus:outline-none">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <!-- Delete Icon -->
+                                            <button class="text-red-500 hover:text-red-700 focus:outline-none">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <!-- Post Details (Right) -->
-                    <div class="w-3/4 pl-4">
-                        <!-- Post Title -->
-                        <h4 class="text-md font-semibold text-gray-800 mb-2">Post Title</h4>
-                        <!-- Post Description -->
-                        <p class="text-gray-600 mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <!-- Post Quantity -->
-                        <p class="text-gray-600 mb-2"><strong>Quantity:</strong> 5</p>
-                        <!-- Post Price -->
-                        <p class="text-gray-600 mb-2"><strong>Price:</strong> Rs 500/day</p>
-                        <!-- Post Type -->
-                        <p class="text-gray-600 mb-2"><strong>Type:</strong> Cycle</p>
-                        <!-- Edit and Delete Icons  -->
-                        <div class="flex justify-end space-x-4">
-                            <!-- Edit Icon -->
-                            <button class="text-indigo-500 hover:text-indigo-700 focus:outline-none">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <!-- Delete Icon -->
-                            <button class="text-red-500 hover:text-red-700 focus:outline-none">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
+                @endif
+
+                @if ($temp2 == 1)
+                    <div class="flex justify-end py-4">
+
+                        <a href="{{ route('create.post.get', $data->email) }}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300">Create
+                            Post</a>
                     </div>
-                </div>
-                <div class="flex justify-end py-4">
-
-                    <a href="{{ route('create.post.get', $data->email) }}"
-                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300">Create
-                        Post</a>
-                </div>
-
+                @endif
             </div>
             <!-- Toggle Button (Switch between Profile and Ride Requests) -->
             <button
@@ -122,7 +136,7 @@
                 } else {
                     profileContent.style.display = 'block';
                     rideRequestContent.style.display = 'none';
-                    toggle.innerHTML = "View Ride Requests";
+                    toggle.innerHTML = "My Posts";
                 }
             }
             var lat = document.getElementById('latitude');

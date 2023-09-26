@@ -134,43 +134,53 @@
 
             <!-- Posts Section -->
             <div class="mt-7">
-                <!-- If No Posts Found -->
-                <p class="text-gray-600 mb-4">No posts found.</p>
-                <!-- Sample Post -->
-                <div class="mb-8 bg-white rounded-lg shadow-md max-w-sm p-2">
-                    <img src="post-image.jpg" alt="Post Image" class="w-full h-40 object-cover rounded-t-lg">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Post Title</h3>
-                        <p class="text-gray-600 mb-2">
-                            Lorem ipsum dolor sit amet
-                            consectetur adipisicing elit. Aliquid sit eligendi itaque praesentium culpa consectetur.
-                        </p>
-                        <p class="text-gray-600 mb-2">
-                            <i class="fas fa-bicycle text-indigo-500 mr-2"></i>Cycle
-                        </p>
-                        <p class="text-gray-600 mb-2">
-                            <i class="fas fa-dollar-sign text-indigo-500 mr-2"></i>Rs 500/day
-                        </p>
-                        <p class="text-gray-600 mb-4">
-                            <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available: 5
-                        </p>
-                        <p class="text-gray-600 mb-2">
-                            <i class="fas fa-user text-indigo-500 mr-2"></i>John Doe
-                        </p>
-                        <p class="text-gray-600 mb-2">
-                            <i class="fas fa-phone text-indigo-500 mr-2"></i>9841662237
-                        </p>
-                        <p class="text-gray-600 mb-2">
-                            <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>123 Main Street, City, Country
-                        </p>
-                        <button
-                            class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-2">
-                            Order
-                        </button>
-                    </div>
-                </div>
+                @if ($temp == 1)
+                    <!-- If No Posts Found -->
+                    <p class="text-gray-600 mb-4">No posts found.</p>
+                @else
+                    @foreach ($post as $p)
+                        <!-- Sample Post -->
+                        <div class="mb-8 bg-white rounded-lg shadow-md max-w-sm p-2">
+                            <img src="{{ asset('posts_pic/' . $p->image) }}" alt="Post Image"
+                                class="w-full h-40 object-cover rounded-t-lg">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ $p->title }}</h3>
+                                <p class="text-gray-600 mb-2">
+                                    {{ $p->description }}
+                                </p>
+                                <p class="text-gray-600 mb-2">
+                                    @if ($p->type == 'Cycle')
+                                        <i class="fas fa-bicycle text-indigo-500 mr-2"></i>Cycle
+                                    @elseif ($p->type == '2WD')
+                                        <i class="fas fa-motorcycle text-indigo-500 mr-2"></i>2 Wheeler
+                                    @else
+                                        <i class="fas fa-car text-indigo-500 mr-2"></i>4 Wheeler
+                                    @endif
+                                </p>
+                                <p class="text-gray-600 mb-2">
+                                    <i class="fas fa-dollar-sign text-indigo-500 mr-2"></i>Rs {{ $p->rate }}/day
+                                </p>
+                                <p class="text-gray-600 mb-4">
+                                    <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available: {{ $p->quantity }}
+                                </p>
+                                <a href="{{ route('user.profile.show', $p->email) }}" class="text-gray-600 mb-2">
+                                    <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $p->name }}
+                                </a>
+                                <p class="text-gray-600 mb-2 mt-2">
+                                    <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $p->contact }}
+                                </p>
+                                <p class="text-gray-600 mb-8">
+                                    <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $p->address }}
+                                </p>
+                                <a
+                                    class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                    Order
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
-            <!-- Add more posts here as needed -->
         </div>
     </main>
 </body>
