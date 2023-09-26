@@ -364,9 +364,11 @@ class CustomizedController extends Controller
     {
         $user = User::where('email', '=', $email);
         if ($user) {
+            dd($user);
             $user->delete();
             return redirect('logout');
         } else {
+            // dd($user);
             $user = Agency::where('email', '=', $email);
             $post = Posts::where('agencyEmail', '=', $email)->get();
             foreach ($post as $p)

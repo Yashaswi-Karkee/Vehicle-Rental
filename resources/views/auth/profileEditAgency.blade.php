@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Update Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <style>
@@ -25,7 +25,7 @@
     <div class="min-h-screen flex items-center justify-center">
         <!-- Registration Card -->
         <div class="bg-white p-8 rounded shadow-md w-4/12 mx-4 w-4/12" id="main">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Register</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Update Profile</h2>
             <form action="{{ route('update.profile', $data1->email) }}" method="POST" enctype="multipart/form-data">
                 @if (Session::has('success'))
                     <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
