@@ -444,11 +444,11 @@ class CustomizedController extends Controller
             $post->longitude = $temp1->longitude;
 
             $post->save();
-            return back()->with('success', 'Post Created!');
+            return redirect()->to('user.profile.show')->with('success', 'Post Created!');
 
         } else {
 
-            return back()->with('fail', 'Something went wrong!');
+            return redirect()->to('user.profile.show')->with('fail', 'Something went wrong!');
 
         }
 
