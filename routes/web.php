@@ -44,5 +44,5 @@ Route::get('/user-profile/{email}', [CustomizedController::class, 'showUserProfi
 Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
 
 //Routes for Posts
-Route::get('/create-posts{email}', [CustomizedController::class, 'createPostGet'])->middleware('checkCreds')->name('create.post.get');
-Route::post('/create-posts-post{email}', [CustomizedController::class, 'createPostPost'])->name('create.post.post');
+Route::get('/create-posts/{email}', [CustomizedController::class, 'createPostGet'])->name('create.post.get');
+Route::post('/create-posts-post/{email}', [CustomizedController::class, 'createPostPost'])->name('create.post.post');

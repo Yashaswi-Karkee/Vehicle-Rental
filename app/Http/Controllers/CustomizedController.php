@@ -436,7 +436,8 @@ class CustomizedController extends Controller
             $post->title = $request->title;
             $post->agencyEmail = $email;
             $post->description = $request->description;
-            $post->type = $request->type;
+            $post->type = $request->type->value;
+            dd($request->type->value);
             $post->rate = $request->price;
             $post->quantity = $request->tquantity;
             $post->latitude = $temp1->latitude;
