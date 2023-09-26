@@ -38,7 +38,7 @@
 <body class="bg-gray-100 font-sans w-screen">
     <div class="min-h-screen flex items-center justify-center">
         <!-- Registration Card -->
-        <div class="bg-white p-8 rounded shadow-md w-4/12 mx-4 w-4/12 relative" id="main">
+        <div class="bg-white p-8 rounded shadow-md w-4/12 mx-4 relative" id="main">
             <!-- Close icon -->
             <a href="{{ route('homepage') }}" class="close-icon"><i class="fas fa-times text-xl"></i></a>
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Register</h2>
@@ -143,11 +143,17 @@
                             {{ $message }}
                         @enderror
                     </span>
+                    <p class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2
+                        px-4 rounded mt-4 text-center w-3/12 cursor-pointer"
+                        onclick="addCoordinates()">
+                        Select Address</p>
+
 
                 </div>
                 <div class="mb-4 flex justify-between">
-                    <p class="block text-sm font-medium text-gray-600">Registering as User? <a
-                            href="{{ route('registrationUser') }}" class="text-indigo-500 hover:underline mx-1">Click
+                    <p class="text-sm font-medium text-gray-600 flex justify-center w-full">
+                        Registering as User?<a href="{{ route('registrationUser') }}"
+                            class="text-indigo-500 hover:underline mx-1">Click
                             here</a></p>
 
                 </div>
@@ -177,9 +183,8 @@
 
     var lat = document.getElementById('latitude');
     var long = document.getElementById('longitude');
-    if (lat.value == "") {
-        console.log('hi');
-    }
+    var lt = lat.value;
+    var lg = long.value;
 
     function GetMap() {
 
@@ -195,13 +200,13 @@
                 position.coords.latitude,
                 position.coords.longitude
             );
-            if (lat.value == "") {
+            if (lt == "") {
 
-                lat.value = center.latitude;
-                long.value = center.longitude;
+                lt = center.latitude;
+                lg = center.longitude;
             } else {
-                center.latitude = lat.value;
-                center.longitude = long.value;
+                center.latitude = lt.value;
+                center.longitude = lg.value;
             }
             // Add a pushpin at the user 's location.
             var pin = new Microsoft.Maps.Pushpin(center, {
@@ -228,8 +233,8 @@
                 var point = new Microsoft.Maps.Point(e.getX(), e.getY());
                 var locTemp = e.target.tryPixelToLocation(point);
                 var location = new Microsoft.Maps.Location(locTemp.latitude, locTemp.longitude);
-                lat.value = locTemp.latitude;
-                long.value = locTemp.longitude;
+                lt = locTemp.latitude;
+                lg = locTemp.longitude;
 
                 for (var i = map.entities.getLength() - 1; i >= 0; i--) {
                     var pushpin = map.entities.get(i);
@@ -247,16 +252,19 @@
                 });
 
                 Microsoft.Maps.Events.addHandler(pin, 'dragend', function() {
-                    const lat = document.getElementById('latitude');
-                    const long = document.getElementById('longitude');
                     var pinLocation = pin.getLocation();
-                    lat.val = pinLocation.latitude;
-                    long.val = pinLocation.longitude;
+                    lt = pinLocation.latitude;
+                    lg = pinLocation.longitude;
                 });
 
             }
         }
 
+    }
+
+    function addCoordinates() {
+        lat.value = lt;
+        long.value = lg;
     }
 </script>
 <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>

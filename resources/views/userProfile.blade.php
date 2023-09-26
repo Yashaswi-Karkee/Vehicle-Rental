@@ -23,26 +23,30 @@
                 <!-- User Profile Header -->
                 <div class="w-full flex flex-col justify-center items-center mb-8">
                     <div class="flex justify-center mt-4">
-                        <img src="profile-pic.jpg" alt="User Profile Picture"
+                        <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Profile Picture"
                             class="w-16 h-16 rounded-full object-cover mb-8">
                     </div>
                     <div class="flex justify-center flex-col items-center">
-                        <h2 class="text-xl font-semibold text-gray-800">User Name</h2>
-                        <p class="text-gray-600">user@email.com</p>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ $data->name }}</h2>
+                        <p class="text-gray-600">{{ $data->email }}</p>
                     </div>
                 </div>
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-800">Contact Information</h3>
                     <!-- Phone Icon -->
-                    <p class="text-gray-600"><i class="fas fa-phone text-indigo-500 mr-2"></i>+1 123-456-7890</p>
+                    <p class="text-gray-600"><i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $data->contact }}</p>
                     <!-- Address Icon -->
-                    <p class="text-gray-600"><i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>123 Street Name,
-                        City, Country</p>
+                    <p class="text-gray-600"><i
+                            class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $data->address }}</p>
                 </div>
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Map</h3>
-                    <!-- Map (You can replace this with your map component) -->
-                    <div id="map" class="w-full h-56 bg-gray-300"></div>
+                    <input type="number" id="latitude" name="latitude" value="{{ $data->latitude }}"
+                        step="0.00000000000000001" hidden>
+                    <input type="number" id="longitude" name="longitude" value="{{ $data->longitude }}"
+                        step="0.00000000000000001" hidden>
+                    <div id="myMap" class="w-full bg-gray-300" style="height: 400px"></div>
+
                 </div>
             </div>
             <!-- Ride Request Content -->
@@ -68,7 +72,7 @@
             <!-- Toggle Button (Switch between Profile and Ride Requests) -->
             <button
                 class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-2"
-                id="toggle">View Ride Requests</button>
+                id="toggle">My Posts</button>
         </div>
 
         <!-- JavaScript to Toggle Profile and Ride Requests -->
@@ -81,7 +85,7 @@
                 const rideRequestContent = document.querySelector('#rideRequestContent');
 
                 // Toggle visibility of Profile and Ride Requests
-                if (toggle.innerHTML === 'View Ride Requests') {
+                if (toggle.innerHTML === 'My Posts') {
                     profileContent.style.display = 'none';
                     rideRequestContent.style.display = 'block';
                     toggle.innerHTML = "View Profile";
@@ -91,9 +95,44 @@
                     toggle.innerHTML = "View Ride Requests";
                 }
             }
+            var lat = document.getElementById('latitude');
+            var long = document.getElementById('longitude');
+
+            function GetMap() {
+
+                var map = new Microsoft.Maps.Map('#myMap', {
+                    credentials: 'Ami9yJcL6eXX476A77s-16F4ZyLAftc745imSzr9ZWhgNMgv9CcdipqNdAUAJKMH',
+                    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                    zoom: 15,
+                });
+
+
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var center = new Microsoft.Maps.Location(
+                        position.coords.latitude,
+                        position.coords.longitude
+                    );
+
+                    center.latitude = lat.value;
+                    center.longitude = long.value;
+                    // Add a pushpin at the user 's location.
+                    var pin = new Microsoft.Maps.Pushpin(center, {
+                        'draggable': false
+                    });
+                    map.entities.push(pin);
+                    // Center the map on the user's location.
+
+                    map.setView({
+                        center: center,
+                        zoom: 15
+                    });
+                });
+            }
+
 
             toggle.addEventListener("click", toggleView);
         </script>
+        <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
     </div>
 </body>
 

@@ -76,6 +76,26 @@
                         @enderror
                     </span>
                 </div>
+                <div class="mb-4">
+                    <label for="address" class="block text-sm font-medium text-gray-600">Address</label>
+                    <input type="text" id="address" name="address" value="{{ $data1->address }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('address')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+                    <label for="contact" class="block text-sm font-medium text-gray-600">Contact Number</label>
+                    <input type="number" id="contact" name="contact" value="{{ $data1->contact }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('contact')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
 
 
                 <div class="mb-4">

@@ -48,9 +48,9 @@
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                         style="display: none" id="options">
                         <div class="py-1">
-                            <a href="{{ route('user.profile.show', $data->email) }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Profile</a>
                             @if ($data->latitude)
+                                <a href="{{ route('user.profile.show', $data->email) }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Profile</a>
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
                             @else
@@ -128,6 +128,11 @@
                     <!-- Add more filter options as needed -->
                 </div>
             </div>
+            <input type="number" id="latitude" name="latitude" value="{{ old('latitude') }}"
+                step="0.00000000000000001" hidden>
+            <input type="number" id="longitude" name="longitude" value="{{ old('longitude') }}"
+                step="0.00000000000000001" hidden>
+
 
             <!-- Posts Section -->
             <div class="mt-7">
@@ -178,6 +183,22 @@
     const menu = document.querySelector('#options');
     const filterButton = document.getElementById("filterButton");
     const filterOptions = document.getElementById("filterOptions");
+    var lat = document.getElementById('latitude');
+    var long = document.getElementById('longitude');
+
+    function GetMap() {
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var center = new Microsoft.Maps.Location(
+                position.coords.latitude,
+                position.coords.longitude
+            );
+
+            lat.value = center.latitude;
+            long.value = center.longitude;
+            console.log(lat.value)
+        });
+    }
 
     function showMenu() {
         if (menu.style.display === "none") {
@@ -199,5 +220,6 @@
 
     filterButton.addEventListener("click", toggleFilterOptions);
 </script>
+<script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
 
 </html>

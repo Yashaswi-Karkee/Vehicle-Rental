@@ -65,7 +65,12 @@ class CustomizedController extends Controller
 
     public function showUserProfile($email)
     {
-        return view('userProfile');
+        $data = Agency::where('email', '=', $email)->first();
+        if ($data) {
+            return view('userProfile', compact('data'));
+        } else {
+            return back()->with('fail', 'Some error occured!');
+        }
     }
 
     public function settings()
@@ -335,6 +340,8 @@ class CustomizedController extends Controller
             $request->validate([
                 'name' => 'string|required',
                 'email' => 'email|required',
+                'address' => 'required',
+                'contact' => 'required|max:10',
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
             ]);
             if ($request->hasFile('image')) {
@@ -350,6 +357,8 @@ class CustomizedController extends Controller
 
             $temp1->name = $request->name;
             $temp1->email = $request->email;
+            $temp1->contact = $request->contact;
+            $temp1->address = $request->address;
 
             $temp1->update();
             return redirect()->to(route('settings'))->with('success', 'Details Changed!');
@@ -359,6 +368,8 @@ class CustomizedController extends Controller
             $request->validate([
                 'name' => 'string|required',
                 'email' => 'email|required',
+                'address' => 'required',
+                'contact' => 'required|max:10',
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
                 'latitude' => 'required',
                 'longitude' => 'required'
@@ -386,6 +397,8 @@ class CustomizedController extends Controller
 
             $temp2->name = $request->name;
             $temp2->email = $request->email;
+            $temp2->contact = $request->contact;
+            $temp2->address = $request->address;
             $temp2->latitude = $request->latitude;
             $temp2->longitude = $request->longitude;
 
