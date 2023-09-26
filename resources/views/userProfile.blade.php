@@ -40,7 +40,7 @@
                             class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $data->address }}</p>
                 </div>
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Map</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Address</h3>
                     <input type="number" id="latitude" name="latitude" value="{{ $data->latitude }}"
                         step="0.00000000000000001" hidden>
                     <input type="number" id="longitude" name="longitude" value="{{ $data->longitude }}"
@@ -50,24 +50,46 @@
                 </div>
             </div>
             <!-- Ride Request Content -->
-            <div id="rideRequestContent" class="w-8/12 pl-4" style="display: none;">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Ride Requests</h3>
-                <!-- Scrollable Ride Requests (Replace with actual requests) -->
-                <div class="h-64 overflow-y-scroll">
-                    <!-- Ride Request Item 1 -->
-                    <div class="mb-2 border rounded-lg p-2">
-                        <h4 class="text-md font-semibold text-gray-800">Request 1</h4>
-                        <p class="text-gray-600">Details for Request 1 Lorem ipsum dolor sit amet, consectetur
-                            adipiscing elit.</p>
+            <div id="rideRequestContent" class="w-full pl-4" style="display: none;">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">My Posts</h3>
+                <!-- Sample Post -->
+                <div class="mb-4 rounded-lg p-4 flex items-center shadow-lg">
+                    <!-- Post Image (Left) -->
+                    <div class="w-1/4">
+                        <img src="post-image.jpg" alt="Post Image" class="w-full h-auto rounded-lg">
                     </div>
-                    <!-- Ride Request Item 2 -->
-                    <div class="mb-2">
-                        <h4 class="text-md font-semibold text-gray-800">Request 2</h4>
-                        <p class="text-gray-600">Details for Request 2 Sed euismod sapien et turpis fermentum, nec
-                            hendrerit risus pharetra.</p>
+                    <!-- Post Details (Right) -->
+                    <div class="w-3/4 pl-4">
+                        <!-- Post Title -->
+                        <h4 class="text-md font-semibold text-gray-800 mb-2">Post Title</h4>
+                        <!-- Post Description -->
+                        <p class="text-gray-600 mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <!-- Post Quantity -->
+                        <p class="text-gray-600 mb-2"><strong>Quantity:</strong> 5</p>
+                        <!-- Post Price -->
+                        <p class="text-gray-600 mb-2"><strong>Price:</strong> Rs 500/day</p>
+                        <!-- Post Type -->
+                        <p class="text-gray-600 mb-2"><strong>Type:</strong> Cycle</p>
+                        <!-- Edit and Delete Icons  -->
+                        <div class="flex justify-end space-x-4">
+                            <!-- Edit Icon -->
+                            <button class="text-indigo-500 hover:text-indigo-700 focus:outline-none">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <!-- Delete Icon -->
+                            <button class="text-red-500 hover:text-red-700 focus:outline-none">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
                     </div>
-                    <!-- Add more ride request items as needed -->
                 </div>
+                <div class="flex justify-end py-4">
+
+                    <a href="{{ route('create.post.get') }}"
+                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300">Create
+                        Post</a>
+                </div>
+
             </div>
             <!-- Toggle Button (Switch between Profile and Ride Requests) -->
             <button

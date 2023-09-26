@@ -85,10 +85,7 @@
         <div class="bg-white shadow-md rounded-lg p-12">
             <!-- Search Bar -->
             <div class="mb-1 w-full flex flex-col justify-end">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold mb-4">Search</h2>
 
-                </div>
                 <div class="flex justify-end space-x-4 w-full">
                     <!-- Vehicle Type Dropdown -->
                     <div class="relative">
@@ -137,7 +134,6 @@
 
             <!-- Posts Section -->
             <div class="mt-7">
-                <h2 class="text-xl font-semibold mb-4">Available Vehicles</h2>
                 <!-- If No Posts Found -->
                 <p class="text-gray-600 mb-4">No posts found.</p>
                 <!-- Sample Post -->
@@ -175,7 +171,6 @@
                 </div>
             </div>
             <!-- Add more posts here as needed -->
-        </div>
         </div>
     </main>
 </body>
