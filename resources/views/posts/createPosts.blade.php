@@ -6,17 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Post</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
 </head>
 
 <body class="bg-gray-100 font-sans p-6">
 
     <!-- Close Icon -->
-    <button class="absolute top-0 right-0 mt-2 mr-2 text-gray-600 hover:text-gray-800 focus:outline-none">
-        <i class="fas fa-times"></i>
-    </button>
+    <a href="{{ route('user.profile.show', $email) }}"
+        class="absolute top-0 right-0 mt-2 mr-2 text-gray-600 hover:text-gray-800 focus:outline-none">
+        <i class="fas fa-times text-2xl"></i>
+    </a>
 
     <!-- Post Form -->
     <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+        @if (Session::has('success'))
+            <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
+                {{ Session::get('success') }}</div>
+        @endif
+        @if (Session::has('fail'))
+            <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                {{ Session::get('fail') }}</div>
+        @endif
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Create Post</h2>
         <form action="{{ route('create.post.post', $email) }}" method="POST" enctype="multipart/form-data">
             <!-- Post Title -->

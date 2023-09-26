@@ -429,26 +429,26 @@ class CustomizedController extends Controller
             ]);
 
             $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
-            $request->image->move(public_path('profile_pictures'), $newImgName);
+            $request->image->move(public_path('posts_pic'), $newImgName);
             $post = new Posts();
 
             $post->pic = $newImgName;
             $post->title = $request->title;
             $post->agencyEmail = $email;
             $post->description = $request->description;
-            $post->type = $request->type->value;
-            dd($request->type->value);
+
+            $post->type = $request->type;
             $post->rate = $request->price;
-            $post->quantity = $request->tquantity;
+            $post->quantity = $request->quantity;
             $post->latitude = $temp1->latitude;
             $post->longitude = $temp1->longitude;
 
             $post->save();
-            return redirect()->to('user.profile.show')->with('success', 'Post Created!');
+            return back()->with('success', 'Post Created!');
 
         } else {
 
-            return redirect()->to('user.profile.show')->with('fail', 'Something went wrong!');
+            return back()->with('fail', 'Something went wrong!');
 
         }
 
