@@ -76,8 +76,8 @@
             <!-- Post Description -->
             <div class="mb-4">
                 <label for="description" class="block text-gray-700 font-semibold mb-2">Description</label>
-                <textarea id="description" name="description" rows="4" value="{{ old('description') }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-indigo-500" required></textarea>
+                <textarea id="description" name="description" rows="4"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-indigo-500" required> {{ old('description') }}</textarea>
             </div>
             <span class=" text-red-600">
                 @error('description')
