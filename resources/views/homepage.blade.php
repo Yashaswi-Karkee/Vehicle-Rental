@@ -163,13 +163,16 @@
                                 <p class="text-gray-600 mb-4">
                                     <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available: {{ $p->quantity }}
                                 </p>
-                                <a href="{{ route('user.profile.show', $p->email) }}" class="text-gray-600 mb-2">
+                                <a href="{{ route('user.profile.show', $p->email) }}" class="text-gray-600">
                                     <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $p->name }}
                                 </a>
                                 <p class="text-gray-600 mb-2 mt-2">
                                     <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $p->contact }}
                                 </p>
-                                <p class="text-gray-600 mb-8">
+                                <a href="mailto:{{ $p->email }}" class="text-gray-600">
+                                    <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $p->email }}
+                                </a>
+                                <p class="text-gray-600 mb-8 mt-2">
                                     <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $p->address }}
                                 </p>
                                 <a
