@@ -20,6 +20,13 @@ use File;
 class CustomizedController extends Controller
 {
 
+
+    //Filtering options
+    public function filtering($latitude, $longitude)
+    {
+        return [$latitude, $longitude];
+    }
+
     //HomePage View
     public function homepage()
     {
@@ -28,6 +35,7 @@ class CustomizedController extends Controller
         $check = Posts::first();
         if (is_null($check)) {
             $temp = 1;
+            $post = null;
         } else {
             $temp = 0;
             $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
@@ -40,11 +48,18 @@ class CustomizedController extends Controller
             if ($data) {
                 return view("homepage", compact('data', 'temp', 'post'));
             } else {
+                $data = null;
                 return view('homepage', compact('data', 'temp', 'post'));
             }
         }
 
     }
+
+
+
+
+
+
 
 
 
@@ -353,6 +368,15 @@ class CustomizedController extends Controller
                 $temp2->profile_pic = $newImgName;
             }
 
+            $posts = Posts::where('email', '=', $temp2->email)->get();
+
+            foreach ($posts as $post) {
+                $post->agencyEmail = $request->email;
+                $post->latitude = $request->latitude;
+                $post->longitude = $request->longitude;
+                $post->update();
+            }
+
             $temp2->name = $request->name;
             $temp2->email = $request->email;
             $temp2->contact = $request->contact;
@@ -424,6 +448,7 @@ class CustomizedController extends Controller
             return redirect('logout');
         }
     }
+
 
     //Update password code
     public function updatePassword(Request $request, $email)
@@ -569,6 +594,13 @@ class CustomizedController extends Controller
         return view('posts.createPosts', compact('email'));
     }
 
+    //Get view for Updating Post
+    public function updatePostGet($id)
+    {
+        $post = Posts::where('id', '=', $id)->first();
+        return view('posts.updatePosts', compact('post'));
+    }
+
     //Actual code to create a post
     public function createPostPost(Request $request, $email)
     {
@@ -591,7 +623,6 @@ class CustomizedController extends Controller
             $post->title = $request->title;
             $post->agencyEmail = $email;
             $post->description = $request->description;
-
             $post->type = $request->type;
             $post->rate = $request->price;
             $post->quantity = $request->quantity;
@@ -607,6 +638,95 @@ class CustomizedController extends Controller
 
         }
 
+    }
+
+    //Actual code to update post
+    public function updatePostPost(Request $request, $id)
+    {
+        $temp1 = Posts::where('id', '=', $id)->first();
+        if ($temp1) {
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'type' => 'required',
+                'price' => 'required',
+                'quantity' => 'required',
+                'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
+            ]);
+
+            if ($request->hasFile('image')) {
+                // Construct the full image path using public_path()
+                $image_path = public_path("posts_pic/{$temp1->pic}");
+
+                // Check if the image file exists before attempting deletion
+                if (File::exists($image_path)) {
+                    try {
+                        // Delete the existing image
+                        File::delete($image_path);
+                    } catch (\Exception $e) {
+                        // Handle any exceptions that occur during deletion
+                        return back()->with('fail', 'Error deleting the existing image.');
+                    }
+                }
+
+                // Upload and save the new image
+                $newImgName = time() . "-" . $request->title . '.' . $request->image->extension();
+                $request->image->move(public_path('posts_pic'), $newImgName);
+                $temp1->pic = $newImgName;
+            }
+
+
+            $temp1->title = $request->title;
+            $temp1->description = $request->description;
+            $temp1->type = $request->type;
+            $temp1->rate = $request->price;
+            $temp1->quantity = $request->quantity;
+
+            $temp1->update();
+            return back()->with('success', 'Post Updated!');
+
+        } else {
+
+            return back()->with('fail', 'Something went wrong!');
+
+        }
+
+    }
+
+    //Delete Posts
+    public function deletePosts($id)
+    {
+        $post = Posts::where('id', '=', $id)->first();
+        if ($post) {
+
+            $post->delete();
+            return back()->with('success', 'Post Deleted!');
+        } else {
+
+            return back()->with('fail', 'Something went wrong!');
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Functions for order handling
+    //Get order page
+    public function getOrderPage($id, $userEmail, $agencyEmail)
+    {
+        return view('orderPage', compact('id', 'userEmail', 'agencyEmail'));
     }
 
 

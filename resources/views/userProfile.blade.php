@@ -21,6 +21,15 @@
 
             <!-- User Profile Content -->
             <div id="profileContent" class="w-full block">
+                @if (Session::has('success'))
+                    <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
+                        {{ Session::get('success') }}</div>
+                @endif
+                @if (Session::has('fail'))
+                    <div role="alert"
+                        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                        {{ Session::get('fail') }}</div>
+                @endif
                 <!-- User Profile Header -->
                 <div class="w-full flex flex-col justify-center items-center mb-8">
                     <div class="flex justify-center mt-4">
@@ -88,14 +97,22 @@
                                     @if ($temp2 == 1)
                                         <!-- Edit and Delete Icons  -->
                                         <div class="flex justify-end space-x-4">
+
                                             <!-- Edit Icon -->
-                                            <button class="text-indigo-500 hover:text-indigo-700 focus:outline-none">
+                                            <a href="{{ route('update.post.get', $p->id) }}"
+                                                class="text-indigo-500 hover:text-indigo-700 focus:outline-none">
                                                 <i class="fas fa-edit"></i>
-                                            </button>
-                                            <!-- Delete Icon -->
-                                            <button class="text-red-500 hover:text-red-700 focus:outline-none">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                            </a>
+
+                                            <form action="{{ route('delete.posts', $p->id) }}" method="POST">
+                                                @csrf
+                                                @method('delete')
+                                                <!-- Delete Icon -->
+                                                <button type="submit"
+                                                    class="text-red-500 hover:text-red-700 focus:outline-none">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                            </form>
                                         </div>
                                     @endif
                                 </div>

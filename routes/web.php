@@ -14,8 +14,16 @@ use App\Http\Controllers\CustomizedController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+
 //Route for homepage
 Route::get('/', [CustomizedController::class, 'homepage'])->name('homepage');
+
+
+//Route for filters
+Route::get('/filter={val}', [CustomizedController::class, 'filteringPost'])->name('product.filter.post');
+Route::post('/filter={val}', [CustomizedController::class, 'filteringGet'])->name('product.filter.get');
 
 
 
@@ -56,7 +64,15 @@ Route::post('/password-reset', [CustomizedController::class, 'passwordResetPost'
 //Routes for Posts
 Route::get('/create-posts/{email}', [CustomizedController::class, 'createPostGet'])->name('create.post.get');
 Route::post('/create-posts-post/{email}', [CustomizedController::class, 'createPostPost'])->name('create.post.post');
+Route::get('/update-posts/{id}', [CustomizedController::class, 'updatePostGet'])->name('update.post.get');
+Route::put('/update-posts-post/{id}', [CustomizedController::class, 'updatePostPost'])->name('update.post.post');
+Route::delete('/delete-posts/{id}', [CustomizedController::class, 'deletePosts'])->name('delete.posts');
 
+
+
+
+//Routes for orders
+Route::get('/order/id={id}/by={$userEmail}/from={ownerEmail}', [CustomizedController::class, 'getOrderPage'])->middleware('iLoggedIn')->name('order.get');
 
 
 

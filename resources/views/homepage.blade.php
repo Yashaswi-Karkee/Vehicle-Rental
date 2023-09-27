@@ -121,15 +121,11 @@
             <div class="flex justify-end w-full">
                 <div class="filter-options pt-4 pl-4" id="filterOptions">
                     <!-- Add your filter options here as anchor tags -->
-                    <a href="#" class="block mb-2">Option 1</a>
+                    <a class="block mb-2">Nearest first</a>
                     <a href="#" class="block mb-2">Option 2</a>
                     <!-- Add more filter options as needed -->
                 </div>
             </div>
-            <input type="number" id="latitude" name="latitude" value="{{ old('latitude') }}"
-                step="0.00000000000000001" hidden>
-            <input type="number" id="longitude" name="longitude" value="{{ old('longitude') }}"
-                step="0.00000000000000001" hidden>
 
 
             <!-- Posts Section -->
@@ -137,6 +133,7 @@
                 @if ($temp == 1)
                     <!-- If No Posts Found -->
                     <p class="text-gray-600 mb-4">No posts found.</p>
+                    {{-- <p class="text-gray-600 mb-4">{{ $lat }}</p> --}}
                 @else
                     @foreach ($post as $p)
                         <!-- Sample Post -->
@@ -175,7 +172,7 @@
                                 <p class="text-gray-600 mb-8 mt-2">
                                     <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $p->address }}
                                 </p>
-                                <a
+                                <a href="{{ route('order.get', $p->id, Session::get('loginEmail'), $p->email) }}"
                                     class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
                                     Order
                                 </a>
@@ -214,6 +211,13 @@
             menu.style.display = "none";
         }
     }
+
+    // function navigateToNearestFilter() {
+    //     const latitude = lat.value;
+    //     const longitude = long.value;
+    //     const url = `/lat=${lat.value}&long=${long.value}`;
+    //     window.location.href = url;
+    // }
 
     function toggleFilterOptions() {
         const filterOpt = document.querySelector("#filterOptions");
