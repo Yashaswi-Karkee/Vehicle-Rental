@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Posts;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,8 @@ class CustomizedController extends Controller
             $post = null;
         } else {
             $temp = 0;
-            $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
+            // $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
+            $post = Posts::get();
         }
         $data = User::where('email', '=', Session::get('loginEmail'))->first();
         if ($data) {
@@ -728,6 +730,51 @@ class CustomizedController extends Controller
     {
         return view('orderPage', compact('id', 'userEmail', 'agencyEmail'));
     }
+
+    // Post order page
+    public function postOrderPage(Request $request, $id, $userEmail, $agencyEmail)
+    {
+        // Check if the user is an agency
+        $check = Agency::where('email', $userEmail)->first();
+        if ($userEmail == $agencyEmail || $check) {
+            return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
+        }
+
+        // Parse date and time inputs
+        $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
+        $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+
+        // Calculate total days
+        $totalDays = $pickupDateTime->diffInDays($dropDateTime);
+
+        // Calculate total price based on rate and total days
+        $post = Posts::where('id', '=', $id)->first();
+        $rate = $post->rate;
+        $price = $rate * $totalDays;
+
+        // Create a new Order instance and set its properties
+        $table = new Order();
+        $table->orderedBy = $userEmail;
+        $table->orderedFrom = $agencyEmail;
+        $table->productId = $id;
+        $table->isCompleted = 0;
+        $table->pickUpDate = $request->input('pickUpDate');
+        $table->dropDate = $request->input('dropDate');
+        $table->pickUpTime = $request->input('pickUpTime');
+        $table->dropTime = $request->input('dropTime');
+        $table->pickUpLocation = $request->input('pickUpLocation');
+        $table->dropLocation = $request->input('dropLocation');
+        $table->totalPrice = $price;
+
+        // Save the Order instance to the database
+        $table->save();
+
+        // You can add a success message or redirection here if needed
+
+        // For example, redirect to a success page
+        return back()->with('success', 'Order placed successfully');
+    }
+
 
 
 

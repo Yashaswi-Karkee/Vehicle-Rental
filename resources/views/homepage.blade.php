@@ -1,3 +1,7 @@
+@php
+    use App\Models\Agency;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -129,15 +133,19 @@
 
 
             <!-- Posts Section -->
-            <div class="mt-7">
+            <div class="mt-7 p-4 flex justify-center flex-wrap">
                 @if ($temp == 1)
+
                     <!-- If No Posts Found -->
                     <p class="text-gray-600 mb-4">No posts found.</p>
                     {{-- <p class="text-gray-600 mb-4">{{ $lat }}</p> --}}
                 @else
                     @foreach ($post as $p)
+                        @php
+                            $user = Agency::where('email', '=', $p->agencyEmail)->first();
+                        @endphp
                         <!-- Sample Post -->
-                        <div class="mb-8 bg-white rounded-lg shadow-md max-w-sm p-2">
+                        <div class="m-2 bg-white rounded-lg shadow-md p-4 border w-full" style="width: 350px">
                             <img src="{{ asset('posts_pic/' . $p->pic) }}" alt="Post Image"
                                 class="w-full h-40 object-cover rounded-t-lg">
                             <div class="p-4">
@@ -155,27 +163,36 @@
                                     @endif
                                 </p>
                                 <p class="text-gray-600 mb-2">
-                                    <i class="fas fa-dollar-sign text-indigo-500 mr-2"></i>Rs {{ $p->rate }}/day
+                                    <i class="fas fa-dollar-sign text-indigo-500 mr-2"></i>Rs
+                                    {{ $p->rate }}/day
                                 </p>
                                 <p class="text-gray-600 mb-4">
-                                    <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available: {{ $p->quantity }}
+                                    <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available:
+                                    {{ $p->quantity }}
                                 </p>
-                                <a href="{{ route('user.profile.show', $p->email) }}" class="text-gray-600">
-                                    <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $p->name }}
+                                <a href="{{ route('user.profile.show', $p->agencyEmail) }}" class="text-gray-600">
+                                    <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $user->name }}
                                 </a>
                                 <p class="text-gray-600 mb-2 mt-2">
-                                    <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $p->contact }}
+                                    <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $user->contact }}
                                 </p>
-                                <a href="mailto:{{ $p->email }}" class="text-gray-600">
-                                    <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $p->email }}
+                                <a href="mailto:{{ $p->agencyEmail }}" class="text-gray-600">
+                                    <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $user->email }}
                                 </a>
                                 <p class="text-gray-600 mb-8 mt-2">
-                                    <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $p->address }}
+                                    <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $user->address }}
                                 </p>
-                                <a href="{{ route('order.get', $p->id, Session::get('loginEmail'), $p->email) }}"
-                                    class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
-                                    Order
-                                </a>
+                                @if (!Session::has('loginEmail'))
+                                    <a href="{{ route('login') }}"
+                                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                        Order
+                                    </a>
+                                @else
+                                    <a href="{{ route('order.get', [$p->id, Session::get('loginEmail'), $p->agencyEmail]) }}"
+                                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                        Order
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     @endforeach
