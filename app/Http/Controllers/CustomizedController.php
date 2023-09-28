@@ -749,6 +749,12 @@ class CustomizedController extends Controller
 
         // Calculate total price based on rate and total days
         $post = Posts::where('id', '=', $id)->first();
+        $quantity = $post->quantity;
+        if ($quantity <= 0) {
+            return back()->with('fail', 'Sorry the product is out of stock');
+        }
+        $post->quantity = $quantity - 1;
+        $post->update();
         $rate = $post->rate;
         $price = $rate * $totalDays;
 
@@ -769,13 +775,32 @@ class CustomizedController extends Controller
         // Save the Order instance to the database
         $table->save();
 
-        // You can add a success message or redirection here if needed
 
-        // For example, redirect to a success page
         return back()->with('success', 'Order placed successfully');
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Request Functions
+    //Requests get
+    public function showRequestList()
+    {
+        $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+        return view('requestList', compact('order'));
+    }
 
 
 
