@@ -58,7 +58,8 @@
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
                             @else
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
+                                <a href="{{ route('show.requests') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
                                     Rides</a>
                             @endif
                             <a href="{{ route('settings') }}"
@@ -130,6 +131,7 @@
                     <!-- Add more filter options as needed -->
                 </div>
             </div>
+
 
 
             <!-- Posts Section -->

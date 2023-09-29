@@ -74,6 +74,11 @@ Route::delete('/delete-posts/{id}', [CustomizedController::class, 'deletePosts']
 //Routes for orders
 Route::get('/order/id={id}/by={userEmail}/from={ownerEmail}', [CustomizedController::class, 'getOrderPage'])->name('order.get');
 Route::post('/order-post/id={id}/by={userEmail}/from={ownerEmail}', [CustomizedController::class, 'postOrderPage'])->name('order.post');
+Route::delete('/order-delete/{id}', [CustomizedController::class, 'deleteOrder'])->middleware('isLoggedIn')->name('delete.order');
+
+
+
+
 
 
 

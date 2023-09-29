@@ -779,6 +779,17 @@ class CustomizedController extends Controller
         return back()->with('success', 'Order placed successfully');
     }
 
+    //Delete Order
+    public function deleteOrder($id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        $post = Posts::where('id', '=', $order->productId)->first();
+        $order->delete();
+        $post->quantity = $post->quantity + 1;
+        $post->update();
+        return back()->with('success', 'Deleted Successfully');
+    }
+
 
 
 
@@ -798,8 +809,17 @@ class CustomizedController extends Controller
     //Requests get
     public function showRequestList()
     {
-        $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
-        return view('requestList', compact('order'));
+        $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
+        $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
+        if ($temp1) {
+            $temp2 = null;
+            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
+            return view('requestList', compact('order', 'temp1', 'temp2'));
+        } elseif ($temp2) {
+            $temp1 = null;
+            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+            return view('requestList', compact('order', 'temp1', 'temp2'));
+        }
     }
 
 
