@@ -95,11 +95,10 @@
                                     @endif
                                     @if ($temp1)
                                         <div class="mt-4 flex justify-around">
-                                            {{-- <form action="{{ route('delete.order', $or->id) }}" method="POST"> --}}
-                                            {{-- @csrf
-                                        @method('delete') --}}
-                                            <button class="text-indigo-500 hover:underline">Edit</button>
-                                            {{-- </form> --}}
+
+                                            <a href="{{ route('edit.order.view', $or->id) }}"
+                                                class="text-indigo-500 hover:underline">Edit</a>
+
 
                                             <form action="{{ route('delete.order', $or->id) }}" method="POST">
                                                 @csrf

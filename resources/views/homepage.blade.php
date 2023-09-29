@@ -172,18 +172,22 @@
                                     <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available:
                                     {{ $p->quantity }}
                                 </p>
-                                <a href="{{ route('user.profile.show', $p->agencyEmail) }}" class="text-gray-600">
-                                    <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $user->name }}
-                                </a>
-                                <p class="text-gray-600 mb-2 mt-2">
-                                    <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $user->contact }}
-                                </p>
-                                <a href="mailto:{{ $p->agencyEmail }}" class="text-gray-600">
-                                    <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $user->email }}
-                                </a>
-                                <p class="text-gray-600 mb-8 mt-2">
-                                    <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $user->address }}
-                                </p>
+                                <div class="flex flex-col mt-4 mb-8">
+                                    <a href="{{ route('user.profile.show', $p->agencyEmail) }}"
+                                        class="text-blue-600 hover:underline">
+                                        <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $user->name }}
+                                    </a>
+                                    <a href="tel:{{ $user->contact }}" class="text-blue-600 hover:underline">
+                                        <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $user->contact }}
+                                    </a>
+                                    <a href="mailto:{{ $p->agencyEmail }}" class="text-blue-600 hover:underline">
+                                        <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $user->email }}
+                                    </a>
+                                    <a href="https://www.google.com/maps?q={{ $p->latitude }},{{ $p->longitude }}"
+                                        class="text-blue-600 hover:underline" class="text-gray-600 mb-8 mt-2">
+                                        <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $user->address }}
+                                    </a>
+                                </div>
                                 @if (!Session::has('loginEmail'))
                                     <a href="{{ route('login') }}"
                                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">

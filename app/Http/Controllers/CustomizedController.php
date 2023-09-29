@@ -790,6 +790,50 @@ class CustomizedController extends Controller
         return back()->with('success', 'Deleted Successfully');
     }
 
+    //Edit Order view
+    public function editOrderView($id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        return view('updateOrder', compact('order'));
+
+    }
+
+    //Edit Order Post
+    public function editOrderPost(Request $request, $id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        // Check if the user is an agency
+        $agencyEmail = Agency::where('email', '=', Session::get('loginEmail'))->first();
+        if ($agencyEmail) {
+            return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
+        }
+
+        // Parse date and time inputs
+        $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
+        $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+
+        // Calculate total days
+        $totalDays = $pickupDateTime->diffInDays($dropDateTime);
+
+        // Calculate total price based on rate and total days
+        $post = Posts::where('id', '=', $order->productId)->first();
+        $rate = $post->rate;
+        $price = $rate * $totalDays;
+
+
+        $order->pickUpDate = $request->input('pickUpDate');
+        $order->dropDate = $request->input('dropDate');
+        $order->pickUpTime = $request->input('pickUpTime');
+        $order->dropTime = $request->input('dropTime');
+        $order->pickUpLocation = $request->input('pickUpLocation');
+        $order->dropLocation = $request->input('dropLocation');
+        $order->totalPrice = $price;
+
+        // Save the Order instance to the database
+        $order->update();
+
+        return back()->with('success', 'Order Updated');
+    }
 
 
 
