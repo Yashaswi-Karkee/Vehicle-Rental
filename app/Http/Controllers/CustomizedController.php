@@ -19,6 +19,11 @@ use File;
 use Cixware\Esewa\Config;
 use Cixware\Esewa\Client;
 
+require_once '../vendor/autoload.php';
+
+
+
+
 // Init composer autoloader.
 require '../vendor/autoload.php';
 
@@ -740,18 +745,34 @@ class CustomizedController extends Controller
     // Post order page
     public function postOrderPage(Request $request, $id, $userEmail, $agencyEmail)
     {
+        $request->validate([
+            'pickUpDate' => 'required|date|after:today',
+            // Pick-Up Date must be today or in the future
+            'dropDate' => 'required|date|after:pickUpDate',
+            // Drop Date must be after or equal to Pick-Up Date
+        ]);
         // Check if the user is an agency
         $check = Agency::where('email', $userEmail)->first();
         if ($userEmail == $agencyEmail || $check) {
             return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
         }
 
-        // Parse date and time inputs
-        $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
-        $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+
+        try {
+            // Parse date and time inputs
+            $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
+            $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+        } catch (\Exception $e) {
+            // Handle date parsing errors here, e.g., invalid date format
+            return back()->with('fail', 'Invalid date or time');
+        }
 
         // Calculate total days
         $totalDays = $pickupDateTime->diffInDays($dropDateTime);
+        if ($totalDays <= 0) {
+            return back()->with('fail', 'Invalid date!');
+
+        }
 
         // Calculate total price based on rate and total days
         $post = Posts::where('id', '=', $id)->first();
@@ -785,8 +806,9 @@ class CustomizedController extends Controller
         if ($request->paymentMethod == 'Esewa') {
 
             // Set success and failure callback URLs.
-            $successUrl = url('/success');
-            $failureUrl = url('/fail');
+
+            $successUrl = url('/success/' . $ord_id);
+            $failureUrl = url('/fail/', $ord_id);
 
             // Config for development.
             $config = new Config($successUrl, $failureUrl);
@@ -795,21 +817,56 @@ class CustomizedController extends Controller
             $esewa = new Client($config);
             $esewa->process($table->id, $price, 0, 0, 0);
 
+        } elseif ($request->paymentMethod == 'stripe') {
+            $productItems = [];
+
+            \Stripe\Stripe::setApiKey('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
+            // $stripe = new \Stripe\StripeClient('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
+
+            $productItems[] = [
+                'price_data' => [
+                    'product_data' => [
+                        'name' => $post->title,
+                    ],
+                    'currency' => 'NPR',
+                    'unit_amount' => $price . '00',
+                ],
+                'quantity' => $totalDays
+            ];
+
+            $checkoutSession = \Stripe\Checkout\Session::create([
+                'line_items' => [$productItems],
+                'mode' => 'payment',
+                'customer_email' => $userEmail,
+                'success_url' => url('/success/' . $ord_id),
+                'cancel_url' => url('/fail/', $ord_id),
+            ]);
+            return redirect()->away($checkoutSession->url);
+        } else {
+
+            return back()->with('success', 'Order placed successfully');
         }
-        return back()->with('success', 'Order placed successfully');
 
     }
 
     //Esewa Success
-    public function esewaSuccess()
+    public function esewaSuccess($id)
     {
-        echo "Success";
+        $order = Order::where('id', '=', $id)->first();
+        $order->paymentStatus = "Paid";
+        $order->update();
+        return view('successPage');
     }
 
     //Esewa failure
-    public function esewaFailure()
+    public function esewaFailure($id)
     {
-        echo "Failure";
+        $order = Order::where('id', '=', $id)->first();
+        $post = Posts::where('id', '=', $order->productId)->first();
+        $order->delete();
+        $post->quantity = $post->quantity + 1;
+        $post->update();
+        return view('failPage');
     }
 
     //Delete Order

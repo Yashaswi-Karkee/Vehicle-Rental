@@ -9,6 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
 </head>
+<script>
+    function validateDate() {
+        // Get the current date
+        var currentDate = new Date();
+
+        // Get the value of the pick-up date input field
+        var pickUpDate = new Date(document.getElementById('pickUpDate').value);
+
+        // Compare the pick-up date with the current date
+        if (pickUpDate < currentDate) {
+            // Display an error message
+            alert('Pick-Up Date must be in the future.');
+            return false; // Prevent the form from submitting
+        }
+        return true; // Allow form submission if date is valid
+    }
+</script>
 
 <body class="bg-gray-100 font-sans p-6">
     <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md relative">
@@ -47,6 +64,11 @@
                     <label for="pickUpDate" class="block text-gray-700 font-semibold mb-2">Pick-Up Date</label>
                     <input type="date" id="pickUpDate" name="pickUpDate"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-indigo-500" required>
+                    <span class=" text-red-600">
+                        @error('pickUpDate')
+                            {{ $message }}
+                        @enderror
+                    </span>
                 </div>
 
                 <!-- Drop Date -->
@@ -54,6 +76,11 @@
                     <label for="dropDate" class="block text-gray-700 font-semibold mb-2">Drop Date</label>
                     <input type="date" id="dropDate" name="dropDate"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-indigo-500" required>
+                    <span class=" text-red-600">
+                        @error('dropDate')
+                            {{ $message }}
+                        @enderror
+                    </span>
                 </div>
 
                 <!-- Pick-Up Time -->
@@ -93,6 +120,10 @@
                     <div class="flex items-center">
                         <input type="radio" id="esewa" name="paymentMethod" value="Esewa" required>
                         <label for="esewa" class="ml-2">Esewa</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="card" name="paymentMethod" value="stripe" required>
+                        <label for="esewa" class="ml-2">Card</label>
                     </div>
                 </div>
 
