@@ -77,6 +77,8 @@ Route::post('/order-post/id={id}/by={userEmail}/from={ownerEmail}', [CustomizedC
 Route::delete('/order-delete/{id}', [CustomizedController::class, 'deleteOrder'])->middleware('isLoggedIn')->name('delete.order');
 Route::get('/order-edit/{id}', [CustomizedController::class, 'editOrderView'])->name('edit.order.view');
 Route::put('/order-update/{id}', [CustomizedController::class, 'editOrderPost'])->name('edit.order.post');
+Route::get('success', [CustomizedController::class, 'esewaSuccess']);
+Route::get('fail', [CustomizedController::class, 'esewaSuccess']);
 
 
 
@@ -86,3 +88,5 @@ Route::put('/order-update/{id}', [CustomizedController::class, 'editOrderPost'])
 
 //Just for debugging
 Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
+Route::get('success', [CustomizedController::class, 'esewaSuccess']);
+Route::get('fail', [CustomizedController::class, 'esewaFailure']);

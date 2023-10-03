@@ -172,7 +172,7 @@
                                     <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available:
                                     {{ $p->quantity }}
                                 </p>
-                                <div class="flex flex-col mt-4 mb-8">
+                                <div class="flex flex-col mt-4 mb-8 gap-2">
                                     <a href="{{ route('user.profile.show', $p->agencyEmail) }}"
                                         class="text-blue-600 hover:underline">
                                         <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $user->name }}
@@ -180,7 +180,8 @@
                                     <a href="tel:{{ $user->contact }}" class="text-blue-600 hover:underline">
                                         <i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $user->contact }}
                                     </a>
-                                    <a href="mailto:{{ $p->agencyEmail }}" class="text-blue-600 hover:underline">
+                                    <a href="mailto:{{ $p->agencyEmail }}" target="_blank"
+                                        class="text-blue-600 hover:underline">
                                         <i class="fas fa-envelope text-indigo-500 mr-2"></i>{{ $user->email }}
                                     </a>
                                     <a href="https://www.google.com/maps?q={{ $p->latitude }},{{ $p->longitude }}"

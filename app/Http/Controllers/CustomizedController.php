@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Posts;
+use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -15,6 +16,11 @@ use Mail;
 use Str;
 use Illuminate\Support\Facades\DB;
 use File;
+use Cixware\Esewa\Config;
+use Cixware\Esewa\Client;
+
+// Init composer autoloader.
+require '../vendor/autoload.php';
 
 // use Stevebauman\Location\Facades\Location;
 
@@ -753,10 +759,10 @@ class CustomizedController extends Controller
         if ($quantity <= 0) {
             return back()->with('fail', 'Sorry the product is out of stock');
         }
-        $post->quantity = $quantity - 1;
-        $post->update();
         $rate = $post->rate;
         $price = $rate * $totalDays;
+        $post->quantity = $quantity - 1;
+        $post->update();
 
         // Create a new Order instance and set its properties
         $table = new Order();
@@ -771,12 +777,39 @@ class CustomizedController extends Controller
         $table->pickUpLocation = $request->input('pickUpLocation');
         $table->dropLocation = $request->input('dropLocation');
         $table->totalPrice = $price;
-
+        $table->paymentStatus = "Unpaid";
         // Save the Order instance to the database
         $table->save();
+        $ord_id = $table->id;
 
+        if ($request->paymentMethod == 'Esewa') {
 
+            // Set success and failure callback URLs.
+            $successUrl = url('/success');
+            $failureUrl = url('/fail');
+
+            // Config for development.
+            $config = new Config($successUrl, $failureUrl);
+
+            // Initialize eSewa client.
+            $esewa = new Client($config);
+            $esewa->process($table->id, $price, 0, 0, 0);
+
+        }
         return back()->with('success', 'Order placed successfully');
+
+    }
+
+    //Esewa Success
+    public function esewaSuccess()
+    {
+        echo "Success";
+    }
+
+    //Esewa failure
+    public function esewaFailure()
+    {
+        echo "Failure";
     }
 
     //Delete Order
@@ -807,33 +840,39 @@ class CustomizedController extends Controller
         if ($agencyEmail) {
             return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
         }
+        if ($order->paymentStatus == "Unpaid") {
 
-        // Parse date and time inputs
-        $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
-        $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+            // Parse date and time inputs
+            $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
+            $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
 
-        // Calculate total days
-        $totalDays = $pickupDateTime->diffInDays($dropDateTime);
+            // Calculate total days
+            $totalDays = $pickupDateTime->diffInDays($dropDateTime);
 
-        // Calculate total price based on rate and total days
-        $post = Posts::where('id', '=', $order->productId)->first();
-        $rate = $post->rate;
-        $price = $rate * $totalDays;
+            // Calculate total price based on rate and total days
+            $post = Posts::where('id', '=', $order->productId)->first();
+            $rate = $post->rate;
+            $price = $rate * $totalDays;
 
 
-        $order->pickUpDate = $request->input('pickUpDate');
-        $order->dropDate = $request->input('dropDate');
-        $order->pickUpTime = $request->input('pickUpTime');
-        $order->dropTime = $request->input('dropTime');
-        $order->pickUpLocation = $request->input('pickUpLocation');
-        $order->dropLocation = $request->input('dropLocation');
-        $order->totalPrice = $price;
+            $order->pickUpDate = $request->input('pickUpDate');
+            $order->dropDate = $request->input('dropDate');
+            $order->pickUpTime = $request->input('pickUpTime');
+            $order->dropTime = $request->input('dropTime');
+            $order->pickUpLocation = $request->input('pickUpLocation');
+            $order->dropLocation = $request->input('dropLocation');
+            $order->totalPrice = $price;
 
-        // Save the Order instance to the database
-        $order->update();
+            // Save the Order instance to the database
+            $order->update();
 
-        return back()->with('success', 'Order Updated');
+            return back()->with('success', 'Order Updated');
+        } else {
+            return back()->with('fail', 'Order cannot be updated!');
+        }
     }
+
+
 
 
 
