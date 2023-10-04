@@ -110,6 +110,28 @@
                     </span>
                 </div>
                 <div class="mb-4">
+                    <label for="pan_number" class="block text-sm font-medium text-gray-600">Pan Number</label>
+                    <input type="text" id="pan_number" name="pan_number" value="{{ old('pan_number') }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('pan_number')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+                    <label for="registration_num" class="block text-sm font-medium text-gray-600">Registration
+                        Number</label>
+                    <input type="text" id="registration_num" name="registration_num"
+                        value="{{ old('registration_num') }}"
+                        class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
+                    <span class=" text-red-600">
+                        @error('registration_num')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
                     <input type="password" id="Password" name="password"
                         class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
@@ -126,6 +148,29 @@
                         class="w-full py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none">
                     <span class=" text-red-600">
                         @error('password_confirmation')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+
+                    <label for="pan_image" class="block text-sm font-medium text-gray-600 mb-4">PAN CARD</label>
+
+                    <input type="file" id="pan_image" name="pan_image">
+                    <span class=" text-red-600">
+                        @error('pan_image')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+                <div class="mb-4">
+
+                    <label for="registration_image" class="block text-sm font-medium text-gray-600 mb-4">Registration
+                        Certificate</label>
+
+                    <input type="file" id="registration_image" name="registration_image">
+                    <span class=" text-red-600">
+                        @error('registration_image')
                             {{ $message }}
                         @enderror
                     </span>
@@ -208,6 +253,7 @@
                 center.latitude = lt.value;
                 center.longitude = lg.value;
             }
+            console.log(lt, lg);
             // Add a pushpin at the user 's location.
             var pin = new Microsoft.Maps.Pushpin(center, {
                 'draggable': true

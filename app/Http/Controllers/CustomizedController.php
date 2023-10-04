@@ -123,11 +123,15 @@ class CustomizedController extends Controller
             }
 
         } elseif ($agency) {
-            if (Hash::check($request->password, $agency->password)) {
-                $request->session()->put('loginEmail', $agency->email);
-                return redirect()->to(route('homepage'));
+            if ($agency->isVerified == 1) {
+                if (Hash::check($request->password, $agency->password)) {
+                    $request->session()->put('loginEmail', $agency->email);
+                    return redirect()->to(route('homepage'));
+                } else {
+                    return back()->with('fail', 'Password doesnot match');
+                }
             } else {
-                return back()->with('fail', 'Password doesnot match');
+                return back()->with('fail', 'Your credentials are not verified by admin!');
             }
         } else if ($admin) {
             if (Hash::check($request->password, $admin->password)) {
@@ -181,7 +185,7 @@ class CustomizedController extends Controller
             'image' => 'required|mimes:png,jpg,jpeg,svg,gif|max:5048|image'
         ]);
 
-        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first()) {
+        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
             return back()->with('fail', 'Email already taken');
         } else {
             $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
@@ -217,16 +221,29 @@ class CustomizedController extends Controller
             'address' => 'required',
             'contact' => 'required|max:10',
             'latitude' => 'required',
-            'longitude' => 'required'
+            'longitude' => 'required',
+            'registration_num' => 'required',
+            'pan_number' => 'required',
+            'pan_image' => 'required|image|max:5048|mimes:png,jpg,jpeg,svg,gif',
+            'registration_image' => 'required|image|max:5048|mimes:png,jpg,jpeg,svg,gif',
+
         ]);
 
 
-        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first()) {
+        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
             return back()->with('fail', 'Email already taken');
         } else {
             $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
 
             $request->image->move(public_path('profile_pictures'), $newImgName);
+
+            $PANimg = time() . "-" . $request->name . '.' . $request->pan_image->extension();
+
+            $request->image->move(public_path('PANCard'), $newImgName);
+
+            $Registerimg = time() . "-" . $request->name . '.' . $request->registration_image->extension();
+
+            $request->image->move(public_path('RegistrationCert'), $newImgName);
 
             $user = new Agency();
             $user->name = $request->name;
@@ -238,9 +255,17 @@ class CustomizedController extends Controller
             $user->latitude = $request->latitude;
             $user->longitude = $request->longitude;
             $user->isVerified = 0;
+            $user->PAN_no = $request->pan_number;
+            $user->register_number = $request->registration_num;
+            $user->PAN_pic = $PANimg;
+            $user->company_register_pic = $Registerimg;
 
             $res = $user->save();
             if ($res) {
+                Mail::send('emails.agencyVerificationOnProgress', [], function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Agency Verification');
+                });
                 return back()->with('success', 'An email has been sent to your inbox');
             } else {
                 return back()->with('fail', 'Something went wrong');

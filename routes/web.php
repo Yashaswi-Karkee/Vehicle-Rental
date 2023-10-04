@@ -91,5 +91,5 @@ Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.e
 
 
 //For Admin
-Route::get('/admin', [adminController::class, 'showAdmin'])->name('show.admin');
+Route::get('/admin', [adminController::class, 'showAdmin'])->middleware('isLoggedIn')->name('show.admin');
 Route::get('/logoutAdmin', [adminController::class, 'logoutAdmin'])->middleware('alreadyLoggedIn')->name('logout.admin');

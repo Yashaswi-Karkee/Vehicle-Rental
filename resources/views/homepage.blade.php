@@ -207,6 +207,25 @@
             </div>
         </div>
     </main>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-4">
+        <div class="container mx-auto text-center">
+            <p class="text-lg">Contact Us:</p>
+
+            <p class="text-md"><a href="mailto:hello@example.com" class="hover:underline">
+                    hello@example.com
+                </a>
+            </p>
+            <p class="text-md"><a href="tel:9812345678" class="hover:underline">
+                    9812345678
+                </a>
+            </p>
+            <p class="text-md"><a href="https://www.google.com/maps?q=27.7307544,85.3468015"
+                    class="hover:underline">Sukedhara, Kathmandu
+                </a></p>
+            <p class="text-sm">&copy; 2023 Online Vehicle Rental System</p>
+        </div>
+    </footer>
 </body>
 <script type="text/javascript">
     const avtButton = document.querySelector("#avatarButton");
