@@ -98,6 +98,8 @@
 
                                             <a href="{{ route('edit.order.view', $or->id) }}"
                                                 class="text-indigo-500 hover:underline">Edit</a>
+                                            <a href="{{ route('payment.select', $or->id) }}"
+                                                class="text-indigo-500 hover:underline">Pay</a>
 
 
                                             <form action="{{ route('delete.order', $or->id) }}" method="POST">

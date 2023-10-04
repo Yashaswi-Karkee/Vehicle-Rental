@@ -803,26 +803,46 @@ class CustomizedController extends Controller
         $table->save();
         $ord_id = $table->id;
 
-        if ($request->paymentMethod == 'Esewa') {
+
+
+        return back()->with('success', 'Order placed successfully');
+
+
+    }
+
+    //Payment Selection Get
+    public function paymentSelection($id)
+    {
+        $order = Order::where('id', $id)->first();
+        return view('paymentSelection', compact('order'));
+    }
+
+    //Payment Selection Post
+    public function paymentSelectionPost(Request $request, $id, $userEmail, $agencyEmail)
+    {
+        $order = Order::where('id', $id)->first();
+        $post = Posts::where('id', $order->productId)->first();
+        if ($request->paymentMethod == 'esewa') {
 
             // Set success and failure callback URLs.
 
-            $successUrl = url('/success/' . $ord_id);
-            $failureUrl = url('/fail/', $ord_id);
+            $successUrl = url('/success');
+            $failureUrl = url('/fail');
 
             // Config for development.
             $config = new Config($successUrl, $failureUrl);
 
             // Initialize eSewa client.
             $esewa = new Client($config);
-            $esewa->process($table->id, $price, 0, 0, 0);
+            $esewa->process($id, $order->totalPrice, 0, 0, 0);
 
         } elseif ($request->paymentMethod == 'stripe') {
             $productItems = [];
 
             \Stripe\Stripe::setApiKey('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
             // $stripe = new \Stripe\StripeClient('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
-
+            $quantity = $order->totalPrice / $post->rate;
+            $price = intval($order->totalPrice);
             $productItems[] = [
                 'price_data' => [
                     'product_data' => [
@@ -831,27 +851,26 @@ class CustomizedController extends Controller
                     'currency' => 'NPR',
                     'unit_amount' => $price . '00',
                 ],
-                'quantity' => $totalDays
+                'quantity' => $quantity
             ];
 
             $checkoutSession = \Stripe\Checkout\Session::create([
                 'line_items' => [$productItems],
                 'mode' => 'payment',
                 'customer_email' => $userEmail,
-                'success_url' => url('/success/' . $ord_id),
-                'cancel_url' => url('/fail/', $ord_id),
+                'success_url' => url('/success/' . $id),
+                'cancel_url' => url('/fail/', $id),
             ]);
             return redirect()->away($checkoutSession->url);
         } else {
-
-            return back()->with('success', 'Order placed successfully');
+            return back()->with('fail', 'Error Occured');
         }
-
     }
 
     //Esewa Success
-    public function esewaSuccess($id)
+    public function esewaSuccess()
     {
+        $id = $_GET['pid'];
         $order = Order::where('id', '=', $id)->first();
         $order->paymentStatus = "Paid";
         $order->update();
@@ -859,13 +878,27 @@ class CustomizedController extends Controller
     }
 
     //Esewa failure
-    public function esewaFailure($id)
+    public function esewaFailure()
+    {
+        return view('failPage');
+    }
+    //Stripe Success
+    public function stripeSuccess($id)
     {
         $order = Order::where('id', '=', $id)->first();
-        $post = Posts::where('id', '=', $order->productId)->first();
-        $order->delete();
-        $post->quantity = $post->quantity + 1;
-        $post->update();
+        $order->paymentStatus = "Paid";
+        $order->update();
+        return view('successPage');
+    }
+
+    //Stripe failure
+    public function stripeFailure($id)
+    {
+        // $order = Order::where('id', '=', $id)->first();
+        // $post = Posts::where('id', '=', $order->productId)->first();
+        // $order->delete();
+        // $post->quantity = $post->quantity + 1;
+        // $post->update();
         return view('failPage');
     }
 

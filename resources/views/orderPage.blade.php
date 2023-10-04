@@ -110,22 +110,6 @@
                     <input type="text" id="dropLocation" name="dropLocation"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-indigo-500" required>
                 </div>
-                <!-- Payment Method -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-semibold mb-2">Payment Method</label>
-                    <div class="flex items-center">
-                        <input type="radio" id="cod" name="paymentMethod" value="COD" required>
-                        <label for="cod" class="ml-2">COD (Cash on Delivery)</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="radio" id="esewa" name="paymentMethod" value="Esewa" required>
-                        <label for="esewa" class="ml-2">Esewa</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="radio" id="card" name="paymentMethod" value="stripe" required>
-                        <label for="esewa" class="ml-2">Card</label>
-                    </div>
-                </div>
 
                 <!-- Submit Button -->
                 <div class="text-center">

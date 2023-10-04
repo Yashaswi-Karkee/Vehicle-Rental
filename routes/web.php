@@ -77,8 +77,12 @@ Route::post('/order-post/id={id}/by={userEmail}/from={ownerEmail}', [CustomizedC
 Route::delete('/order-delete/{id}', [CustomizedController::class, 'deleteOrder'])->middleware('isLoggedIn')->name('delete.order');
 Route::get('/order-edit/{id}', [CustomizedController::class, 'editOrderView'])->name('edit.order.view');
 Route::put('/order-update/{id}', [CustomizedController::class, 'editOrderPost'])->name('edit.order.post');
-
-
+Route::get('/paymentSelection/{id}', [CustomizedController::class, 'paymentSelection'])->name('payment.select');
+Route::post('/paymentSelectionPost/{id}/{userEmail}/{agencyEmail}', [CustomizedController::class, 'paymentSelectionPost'])->name('payment.select.post');
+Route::get('/success/{id}', [CustomizedController::class, 'stripeSuccess'])->name('success.stripe');
+Route::get('/fail/{id}', [CustomizedController::class, 'stripeFailure'])->name('fail.stripe');
+Route::get('/success', [CustomizedController::class, 'esewaSuccess'])->name('success.esewa');
+Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.esewa');
 
 
 
@@ -87,5 +91,3 @@ Route::put('/order-update/{id}', [CustomizedController::class, 'editOrderPost'])
 
 //Just for debugging
 Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
-Route::get('/success/{id}', [CustomizedController::class, 'esewaSuccess'])->name('success');
-Route::get('/fail/{id}', [CustomizedController::class, 'esewaFailure'])->name('fail');
