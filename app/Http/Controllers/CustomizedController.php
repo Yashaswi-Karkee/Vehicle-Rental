@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Posts;
 use GrahamCampbell\ResultType\Success;
@@ -111,6 +112,8 @@ class CustomizedController extends Controller
         ]);
 
         $user = User::where('email', '=', $request->email)->first();
+        $agency = Agency::where('email', '=', $request->email)->first();
+        $admin = Admin::where('email', '=', $request->email)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $request->session()->put('loginEmail', $user->email);
@@ -119,21 +122,26 @@ class CustomizedController extends Controller
                 return back()->with('fail', 'Password doesnot match');
             }
 
-        } else {
-            $agency = Agency::where('email', '=', $request->email)->first();
-            if ($agency) {
-                if (Hash::check($request->password, $agency->password)) {
-                    $request->session()->put('loginEmail', $agency->email);
-                    return redirect()->to(route('homepage'));
-                } else {
-                    return back()->with('fail', 'Password doesnot match');
-                }
+        } elseif ($agency) {
+            if (Hash::check($request->password, $agency->password)) {
+                $request->session()->put('loginEmail', $agency->email);
+                return redirect()->to(route('homepage'));
             } else {
-                return back()->with('fail', 'This email is not registered');
+                return back()->with('fail', 'Password doesnot match');
             }
-
+        } else if ($admin) {
+            if (Hash::check($request->password, $admin->password)) {
+                $request->session()->put('loginEmail', $admin->email);
+                return redirect()->to(route('show.admin'));
+            } else {
+                return back()->with('fail', 'Password doesnot match');
+            }
+        } else {
+            return back()->with('fail', 'This email is not registered');
         }
+
     }
+
 
 
 
@@ -229,10 +237,11 @@ class CustomizedController extends Controller
             $user->profile_pic = $newImgName;
             $user->latitude = $request->latitude;
             $user->longitude = $request->longitude;
+            $user->isVerified = 0;
 
             $res = $user->save();
             if ($res) {
-                return back()->with('success', 'You have registered successfully');
+                return back()->with('success', 'An email has been sent to your inbox');
             } else {
                 return back()->with('fail', 'Something went wrong');
             }
@@ -862,6 +871,11 @@ class CustomizedController extends Controller
                 'cancel_url' => url('/fail/', $id),
             ]);
             return redirect()->away($checkoutSession->url);
+        } elseif ($request->paymentMethod == 'COD') {
+            $order = Order::where('id', '=', $id)->first();
+            $order->paymentStatus = "COD";
+            $order->update();
+            return back()->with('success', 'Payment Status set to COD');
         } else {
             return back()->with('fail', 'Error Occured');
         }

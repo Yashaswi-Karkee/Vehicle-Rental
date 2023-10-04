@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\adminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomizedController;
 
@@ -89,5 +90,6 @@ Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.e
 
 
 
-//Just for debugging
-Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
+//For Admin
+Route::get('/admin', [adminController::class, 'showAdmin'])->name('show.admin');
+Route::get('/logoutAdmin', [adminController::class, 'logoutAdmin'])->middleware('alreadyLoggedIn')->name('logout.admin');
