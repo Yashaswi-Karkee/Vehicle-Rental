@@ -23,8 +23,6 @@
         z-index: 999;
 
         width: 150px;
-
-        /* Adjust the width as needed */
     }
 </style>
 
@@ -37,7 +35,7 @@
             <!-- Brand Logo -->
             <a href="{{ route('homepage') }}" class="text-2xl font-semibold text-gray-800">Dashboard</a>
 
-            @if (Session()->has('loginEmail'))
+            @if ($data != null)
                 <!-- User Avatar and Dropdown -->
                 <div class="relative inline-block text-left">
                     <button type="button" class="focus:outline-none" id="avatarButton">
@@ -56,11 +54,15 @@
                                 <a href="{{ route('user.profile.show', $data->email) }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Profile</a>
                                 <a href="{{ route('show.requests') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Order Requests</a>
+                                <a href="{{ route('show.requests') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Pending Orders</a>
                             @else
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
                                     Rides</a>
+                                <a href="{{ route('show.requests') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
                             @endif
                             <a href="{{ route('settings') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Settings</a>

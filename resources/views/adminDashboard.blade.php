@@ -28,7 +28,8 @@
                 </button>
                 <div id="dropdown-menu"
                     class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg hidden">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Requests</a>
+                    <a href="{{ route('show.pending.requests') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Requests</a>
                     <a href="{{ route('logout.admin') }}"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Logout</a>
                 </div>
@@ -39,9 +40,123 @@
 
     <!-- Content Section -->
     <div class="container mx-auto p-6 mt-8 bg-white shadow-md rounded-lg">
-        <h1 class="text-2xl font-semibold mb-6">Admin Dashboard</h1>
-        <!-- Add your content here -->
+        <!-- Agency Table -->
+        <h2 class="text-xl font-semibold mb-4">List of Agencies</h2>
+        <table class="min-w-full">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 bg-gray-200">Agency Name</th>
+                    <th class="py-2 px-4 bg-gray-200">Email</th>
+                    <th class="py-2 px-4 bg-gray-200">Address</th>
+                    <th class="py-2 px-4 bg-gray-200">Contact</th>
+                    <th class="py-2 px-4 bg-gray-200">Actions</th>
+                </tr>
+            </thead>
+            <!-- Table Data -->
+            <tbody>
+                @if (count($agency) > 0)
+                    @foreach ($agency as $ag)
+                        <tr>
+                            <td class="py-2 px-4 text-center">{{ $ag->name }}</td>
+                            <td class="py-2 px-4 text-center">{{ $ag->email }}</td>
+                            <td class="py-2 px-4 text-center">{{ $ag->address }}</td>
+                            <td class="py-2 px-4 text-center">{{ $ag->contact }}</td>
+                            <td class="py-2 px-4 text-center">
+                                <form action="{{ route('delete.account.admin', $ag->email) }}" method="POST">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit"
+                                        class="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600 transition duration-300">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+
+        <!-- User Table -->
+        <h2 class="text-xl font-semibold mt-8 mb-4">List of Users</h2>
+        @if (Session::has('success'))
+            <div role="alert" class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3">
+                {{ Session::get('success') }}</div>
+        @endif
+        @if (Session::has('fail'))
+            <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                {{ Session::get('fail') }}</div>
+        @endif
+        <table class="min-w-full">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 bg-gray-200">User Name</th>
+                    <th class="py-2 px-4 bg-gray-200">Email</th>
+                    <th class="py-2 px-4 bg-gray-200">Address</th>
+                    <th class="py-2 px-4 bg-gray-200">Contact</th>
+                    <th class="py-2 px-4 bg-gray-200">Actions</th>
+                </tr>
+            </thead>
+            <!-- Table Data -->
+            <tbody>
+
+                @if (count($user) > 0)
+                    @foreach ($user as $us)
+                        <tr>
+                            <td class="py-2 px-4 text-center">{{ $us->name }}</td>
+                            <td class="py-2 px-4 text-center">{{ $us->email }}</td>
+                            <td class="py-2 px-4 text-center">{{ $us->address }}</td>
+                            <td class="py-2 px-4 text-center">{{ $us->contact }}</td>
+                            <td class="py-2 px-4 text-center">
+                                <form action="{{ route('delete.account.admin', $us->email) }}" method="POST">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit"
+                                        class="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600 transition duration-300">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+
+        <!-- Admin Table -->
+        {{-- <h2 class="text-xl font-semibold mt-8 mb-4">List of Admins</h2>
+        <table class="min-w-full"> --}}
+        <!-- Table Header -->
+        {{-- <thead>
+                <tr>
+                    <th class="py-2 px-4 bg-gray-200">Email</th>
+                    {{-- <th class="py-2 px-4 bg-gray-200">Actions</th> --}}
+        {{-- </tr>
+        </thead> --}}
+        <!-- Table Data -->
+        {{-- <tbody>
+                @if (count($admin) > 0)
+                    @foreach ($admin as $ad)
+                        <tr>
+                            <td class="py-2 px-4 text-center">{{ $ad->email }}</td> --}}
+        {{-- <td class="py-2 px-4 text-center">
+                                <button
+                                    class="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600 transition duration-300">
+                                    Delete
+                                </button>
+                            </td> --}}
+        {{-- </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table> --}}
+
+
+
     </div>
+
 
 </body>
 <script>

@@ -33,12 +33,12 @@ require '../vendor/autoload.php';
 class CustomizedController extends Controller
 {
 
+    // //Filtering options
+    // public function filtering($latitude, $longitude)
+    // {
+    //     return [$latitude, $longitude];
+    // }
 
-    //Filtering options
-    public function filtering($latitude, $longitude)
-    {
-        return [$latitude, $longitude];
-    }
 
     //HomePage View
     public function homepage()
@@ -217,15 +217,15 @@ class CustomizedController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
-            'image' => 'required|mimes:png,jpg,jpeg,svg,gif|max:5048|image',
+            'image' => 'required|mimes:png,jpg,jpeg,svg,gif|image',
             'address' => 'required',
             'contact' => 'required|max:10',
             'latitude' => 'required',
             'longitude' => 'required',
             'registration_num' => 'required',
             'pan_number' => 'required',
-            'pan_image' => 'required|image|max:5048|mimes:png,jpg,jpeg,svg,gif',
-            'registration_image' => 'required|image|max:5048|mimes:png,jpg,jpeg,svg,gif',
+            'pan_image' => 'required|image|mimes:png,jpg,jpeg,svg,gif',
+            'registration_image' => 'required|image|mimes:png,jpg,jpeg,svg,gif',
 
         ]);
 
@@ -239,11 +239,11 @@ class CustomizedController extends Controller
 
             $PANimg = time() . "-" . $request->name . '.' . $request->pan_image->extension();
 
-            $request->image->move(public_path('PANCard'), $newImgName);
+            $request->pan_image->move(public_path('PANCard'), $PANimg);
 
             $Registerimg = time() . "-" . $request->name . '.' . $request->registration_image->extension();
 
-            $request->image->move(public_path('RegistrationCert'), $newImgName);
+            $request->registration_image->move(public_path('RegistrationCert'), $Registerimg);
 
             $user = new Agency();
             $user->name = $request->name;

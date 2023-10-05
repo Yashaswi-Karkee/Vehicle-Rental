@@ -41,6 +41,7 @@ Route::post('/register-Agency', [CustomizedController::class, 'registerAgency'])
 
 //Route for settings(Profile update,delete)
 Route::get('/settings', [CustomizedController::class, 'settings'])->middleware('isLoggedIn')->name('settings');
+Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
 Route::get('/user-profile/{email}', [CustomizedController::class, 'showUserProfile'])->middleware('isLoggedIn')->name('user.profile.show');
 Route::put('/profile-edit/{email}', [CustomizedController::class, 'updateProfile'])->middleware('isLoggedIn')->name('update.profile');
 Route::get('/profile-edit', [CustomizedController::class, 'editProfile'])->middleware('isLoggedIn')->name('edit.profile');
@@ -92,4 +93,8 @@ Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.e
 
 //For Admin
 Route::get('/admin', [adminController::class, 'showAdmin'])->middleware('isLoggedIn')->name('show.admin');
+Route::get('/pendingRequests', [adminController::class, 'showPendingRequests'])->middleware('isLoggedIn')->name('show.pending.requests');
 Route::get('/logoutAdmin', [adminController::class, 'logoutAdmin'])->middleware('alreadyLoggedIn')->name('logout.admin');
+Route::delete('/deleteAccount/{email}', [adminController::class, 'deleteAccount'])->name('delete.account.admin');
+Route::put('/acceptAccount/{email}', [adminController::class, 'acceptAccount'])->name('accept.account.admin');
+Route::delete('/rejectAccount/{email}', [adminController::class, 'rejectAccount'])->name('reject.account.admin');
