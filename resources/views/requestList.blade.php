@@ -83,7 +83,7 @@
                                             @if ($or->isAccepted == 0)
                                                 <form action="{{ route('accept.order', $or->id) }}" method="POST">
                                                     @csrf
-                                                    @method('put')
+                                                    @method('PUT')
                                                     <button class="text-indigo-500 hover:underline">Accept</button>
                                                 </form>
 
