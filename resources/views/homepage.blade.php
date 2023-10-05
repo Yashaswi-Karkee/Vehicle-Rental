@@ -150,7 +150,7 @@
                             $user = Agency::where('email', '=', $p->agencyEmail)->first();
                         @endphp
                         <!-- Sample Post -->
-                        <div class="m-2 bg-white rounded-lg shadow-md p-4 border w-full" style="width: 350px">
+                        <div class="m-2 bg-white rounded-lg shadow-md p-4 border w-full" style="width: 400px">
                             <img src="{{ asset('posts_pic/' . $p->pic) }}" alt="Post Image"
                                 class="w-full h-40 object-cover rounded-t-lg">
                             <div class="p-4">
@@ -175,7 +175,7 @@
                                     <i class="fas fa-cubes text-indigo-500 mr-2"></i>Available:
                                     {{ $p->quantity }}
                                 </p>
-                                <div class="flex flex-col mt-4 mb-8 gap-2">
+                                <div class="flex flex-col mt-4 gap-2">
                                     <a href="{{ route('user.profile.show', $p->agencyEmail) }}"
                                         class="text-blue-600 hover:underline">
                                         <i class="fas fa-user text-indigo-500 mr-2"></i>{{ $user->name }}
@@ -193,15 +193,27 @@
                                     </a>
                                 </div>
                                 @if (!Session::has('loginEmail'))
-                                    <a href="{{ route('login') }}"
-                                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
-                                        Order
-                                    </a>
+                                    <div class="flex justify-between">
+                                        <a href="{{ route('login') }}"
+                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            Order
+                                        </a>
+                                        <a href="{{ route('login') }}"
+                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            View Reviews
+                                        </a>
+                                    </div>
                                 @else
-                                    <a href="{{ route('order.get', [$p->id, Session::get('loginEmail'), $p->agencyEmail]) }}"
-                                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
-                                        Order
-                                    </a>
+                                    <div class="flex justify-between">
+                                        <a href="{{ route('order.get', [$p->id, Session::get('loginEmail'), $p->agencyEmail]) }}"
+                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            Order
+                                        </a>
+                                        <a href="{{ route('post.description', $p->id) }}"
+                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            View Reviews
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         </div>

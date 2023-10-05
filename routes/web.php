@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\postController;
 use App\Http\Controllers\reviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomizedController;
@@ -68,6 +69,7 @@ Route::post('/password-reset', [CustomizedController::class, 'passwordResetPost'
 
 //Routes for Posts
 Route::get('/create-posts/{email}', [CustomizedController::class, 'createPostGet'])->name('create.post.get');
+Route::get('/showPostDescription/{id}', [postController::class, 'postDescription'])->name('post.description');
 Route::post('/create-posts-post/{email}', [CustomizedController::class, 'createPostPost'])->name('create.post.post');
 Route::get('/update-posts/{id}', [CustomizedController::class, 'updatePostGet'])->name('update.post.get');
 Route::put('/update-posts-post/{id}', [CustomizedController::class, 'updatePostPost'])->name('update.post.post');
