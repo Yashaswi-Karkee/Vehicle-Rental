@@ -825,6 +825,7 @@ class CustomizedController extends Controller
         $table->orderedFrom = $agencyEmail;
         $table->productId = $id;
         $table->isCompleted = 0;
+        $table->isAccepted = 0;
         $table->pickUpDate = $request->input('pickUpDate');
         $table->dropDate = $request->input('dropDate');
         $table->pickUpTime = $request->input('pickUpTime');
@@ -835,9 +836,6 @@ class CustomizedController extends Controller
         $table->paymentStatus = "Unpaid";
         // Save the Order instance to the database
         $table->save();
-        $ord_id = $table->id;
-
-
 
         return back()->with('success', 'Order placed successfully');
 
@@ -1000,6 +998,35 @@ class CustomizedController extends Controller
             return back()->with('fail', 'Order cannot be updated!');
         }
     }
+    //Accept Order
+    public function acceptOrder($id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        $email = $order->orderedBy;
+        $order->isAccepted = 1;
+        $order->update();
+        Mail::send('emails.orderAccepted', [], function ($message) use ($email) {
+            $message->to($email);
+            $message->subject('Order Verified');
+        });
+        return back()->with('success', 'Accepted Order');
+    }
+
+    //Reject Order
+    public function rejectOrder($id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        $email = $order->orderedBy;
+        $post = Posts::where('id', '=', $order->productId)->first();
+        $order->delete();
+        $post->quantity = $post->quantity + 1;
+        $post->update();
+        Mail::send('emails.orderRejected', [], function ($message) use ($email) {
+            $message->to($email);
+            $message->subject('Order Rejected');
+        });
+        return back()->with('success', 'Rejected Order');
+    }
 
 
 
@@ -1026,12 +1053,11 @@ class CustomizedController extends Controller
         if ($temp1) {
             $temp2 = null;
             $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
-            return view('requestList', compact('order', 'temp1', 'temp2'));
         } elseif ($temp2) {
             $temp1 = null;
             $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
-            return view('requestList', compact('order', 'temp1', 'temp2'));
         }
+        return view('requestList', compact('order', 'temp1', 'temp2'));
     }
 
 

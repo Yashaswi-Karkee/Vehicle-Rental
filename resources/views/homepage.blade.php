@@ -41,10 +41,10 @@
                     <button type="button" class="focus:outline-none" id="avatarButton">
                         @if ($data->latitude)
                             <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
-                                class="w-12 h-12 rounded-full">
+                                class="w-12 h-12 rounded-full border">
                         @else
                             <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
-                                class="w-12 h-12 rounded-full">
+                                class="w-12 h-12 rounded-full border">
                         @endif
                     </button>
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
@@ -60,9 +60,10 @@
                             @else
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
-                                    Rides</a>
+                                    Requests</a>
                                 <a href="{{ route('show.requests') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Requests</a>
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Pending
+                                    Delivery</a>
                             @endif
                             <a href="{{ route('settings') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Settings</a>
@@ -86,7 +87,7 @@
         </div>
     </nav>
     <!-- Main Content -->
-    <main class="p-12 grid grid-cols-1 justify-between">
+    <main class="p-12 grid grid-cols-1 justify-between min-h-screen">
 
         <!-- Content -->
         <div class="bg-white shadow-md rounded-lg p-12">

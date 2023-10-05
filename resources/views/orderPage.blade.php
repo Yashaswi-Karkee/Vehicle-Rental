@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
 </head>
-<script>
+{{-- <script>
     function validateDate() {
         // Get the current date
         var currentDate = new Date();
@@ -25,7 +25,7 @@
         }
         return true; // Allow form submission if date is valid
     }
-</script>
+</script> --}}
 
 <body class="bg-gray-100 font-sans p-6">
     <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md relative">
@@ -39,7 +39,7 @@
             <p><strong>Post ID:</strong> {{ $id }}</p>
             <p><strong>User Email:</strong> {{ $userEmail }}</p>
             <p><strong>Agency Email:</strong> {{ $agencyEmail }}</p>
-            <!-- Add more post details here as needed -->
+
         </div>
 
         <!-- Order Form -->

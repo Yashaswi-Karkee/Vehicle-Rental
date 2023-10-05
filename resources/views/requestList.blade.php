@@ -36,13 +36,13 @@
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order Requests</h2>
             @endif
             @if ($temp1)
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Pending Requests</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">My Requests</h2>
             @endif
             <!-- Ads List -->
             @if ($order != null && count($order) > 0)
                 <ul class="space-x-6 flex flex-nowrap overflow-x-scroll">
                     @foreach ($order as $or)
-                        @if ($or->isCompleted == '0')
+                        @if ($or->paymentStatus == 'Unpaid')
                             @php
                                 $prod = Posts::where('id', '=', $or->productId)->first();
                                 $user = User::where('email', '=', $or->orderedBy)->first();
@@ -80,33 +80,39 @@
                                     </div>
                                     @if ($temp2)
                                         <div class="mt-4 flex justify-around">
-                                            {{-- <form action="{{ route('delete.order', $or->id) }}" method="POST"> --}}
-                                            {{-- @csrf
-                                            @method('delete') --}}
-                                            <button class="text-indigo-500 hover:underline">Accept</button>
-                                            {{-- </form> --}}
+                                            @if ($or->isAccepted == 0)
+                                                <form action="{{ route('accept.order', $or->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('put')
+                                                    <button class="text-indigo-500 hover:underline">Accept</button>
+                                                </form>
 
-                                            <form action="{{ route('delete.order', $or->id) }}" method="POST">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="text-red-500 hover:underline">Reject</button>
-                                            </form>
+                                                <form action="{{ route('reject.order', $or->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="text-red-500 hover:underline">Reject</button>
+                                                </form>
+                                            @else
+                                                <h2 class="text-indigo-500">Payment Pending...</h2>
+                                            @endif
                                         </div>
                                     @endif
                                     @if ($temp1)
                                         <div class="mt-4 flex justify-around">
+                                            @if ($or->isAccepted == 1)
+                                                <a href="{{ route('payment.select', $or->id) }}"
+                                                    class="text-indigo-500 hover:underline">Pay</a>
+                                            @else
+                                                <a href="{{ route('edit.order.view', $or->id) }}"
+                                                    class="text-indigo-500 hover:underline">Edit</a>
 
-                                            <a href="{{ route('edit.order.view', $or->id) }}"
-                                                class="text-indigo-500 hover:underline">Edit</a>
-                                            <a href="{{ route('payment.select', $or->id) }}"
-                                                class="text-indigo-500 hover:underline">Pay</a>
 
-
-                                            <form action="{{ route('delete.order', $or->id) }}" method="POST">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="text-red-500 hover:underline">Delete</button>
-                                            </form>
+                                                <form action="{{ route('delete.order', $or->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="text-red-500 hover:underline">Delete</button>
+                                                </form>
+                                            @endif
                                         </div>
                                     @endif
                                 </div>

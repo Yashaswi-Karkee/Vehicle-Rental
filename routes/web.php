@@ -85,6 +85,8 @@ Route::get('/success/{id}', [CustomizedController::class, 'stripeSuccess'])->nam
 Route::get('/fail/{id}', [CustomizedController::class, 'stripeFailure'])->name('fail.stripe');
 Route::get('/success', [CustomizedController::class, 'esewaSuccess'])->name('success.esewa');
 Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.esewa');
+Route::put('/accept-order/{id}', [CustomizedController::class, 'acceptOrder'])->name('accept.order');
+Route::delete('/reject-order/{id}', [CustomizedController::class, 'rejectOrder'])->name('reject.order');
 
 
 
