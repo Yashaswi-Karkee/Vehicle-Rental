@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\reviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomizedController;
 
@@ -42,6 +43,8 @@ Route::post('/register-Agency', [CustomizedController::class, 'registerAgency'])
 //Route for settings(Profile update,delete)
 Route::get('/settings', [CustomizedController::class, 'settings'])->middleware('isLoggedIn')->name('settings');
 Route::get('/request-list', [CustomizedController::class, 'showRequestList'])->name('show.requests');
+Route::get('/pending-order', [CustomizedController::class, 'showPendingOrder'])->name('show.pending.order');
+Route::get('/order-history', [CustomizedController::class, 'showOrderHistory'])->name('show.order.history');
 Route::get('/user-profile/{email}', [CustomizedController::class, 'showUserProfile'])->middleware('isLoggedIn')->name('user.profile.show');
 Route::put('/profile-edit/{email}', [CustomizedController::class, 'updateProfile'])->middleware('isLoggedIn')->name('update.profile');
 Route::get('/profile-edit', [CustomizedController::class, 'editProfile'])->middleware('isLoggedIn')->name('edit.profile');
@@ -87,6 +90,7 @@ Route::get('/success', [CustomizedController::class, 'esewaSuccess'])->name('suc
 Route::get('/fail', [CustomizedController::class, 'esewaFailure'])->name('fail.esewa');
 Route::put('/accept-order/{id}', [CustomizedController::class, 'acceptOrder'])->name('accept.order');
 Route::delete('/reject-order/{id}', [CustomizedController::class, 'rejectOrder'])->name('reject.order');
+Route::put('/complete-order/{id}', [CustomizedController::class, 'completeOrder'])->name('complete.order');
 
 
 
@@ -100,3 +104,8 @@ Route::get('/logoutAdmin', [adminController::class, 'logoutAdmin'])->middleware(
 Route::delete('/deleteAccount/{email}', [adminController::class, 'deleteAccount'])->name('delete.account.admin');
 Route::put('/acceptAccount/{email}', [adminController::class, 'acceptAccount'])->name('accept.account.admin');
 Route::delete('/rejectAccount/{email}', [adminController::class, 'rejectAccount'])->name('reject.account.admin');
+
+
+//Routes for Review
+Route::get('/write-review/{id}', [reviewController::class, 'showWriteReview'])->name('write.review');
+Route::post('/post-review/{id}', [reviewController::class, 'postReview'])->name('post.review');

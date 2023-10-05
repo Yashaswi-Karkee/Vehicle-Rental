@@ -874,7 +874,7 @@ class CustomizedController extends Controller
             \Stripe\Stripe::setApiKey('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
             // $stripe = new \Stripe\StripeClient('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
             $quantity = $order->totalPrice / $post->rate;
-            $price = intval($order->totalPrice);
+            $price = intval($post->rate);
             $productItems[] = [
                 'price_data' => [
                     'product_data' => [
@@ -1028,6 +1028,22 @@ class CustomizedController extends Controller
         return back()->with('success', 'Rejected Order');
     }
 
+    //Complete Order
+    public function completeOrder($id)
+    {
+        $order = Order::where('id', '=', $id)->first();
+        $email = $order->orderedBy;
+        $order->isCompleted = 1;
+        $order->update();
+        Mail::send('emails.orderComplete', [], function ($message) use ($email) {
+            $message->to($email);
+            $message->subject('Order Completed');
+        });
+        return back()->with('success', 'Completed Order');
+    }
+
+
+
 
 
 
@@ -1058,6 +1074,38 @@ class CustomizedController extends Controller
             $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
         }
         return view('requestList', compact('order', 'temp1', 'temp2'));
+    }
+
+    //Pending Order Get
+    public function showPendingOrder()
+    {
+        $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
+        $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
+        if ($temp1) {
+            $temp2 = null;
+            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
+        } elseif ($temp2) {
+            $temp1 = null;
+            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+        }
+        return view('pendingOrders', compact('order', 'temp1', 'temp2'));
+    }
+
+    //Show order History
+    public function showOrderHistory()
+    {
+
+        $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
+        $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
+        if ($temp1) {
+            $temp2 = null;
+            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
+        } elseif ($temp2) {
+            $temp1 = null;
+            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+        }
+        return view('orderHistory', compact('order', 'temp1', 'temp2'));
+
     }
 
 

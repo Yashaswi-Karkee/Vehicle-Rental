@@ -32,17 +32,14 @@
                 <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                     {{ Session::get('fail') }}</div>
             @endif
-            @if ($temp2)
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order Requests</h2>
-            @endif
-            @if ($temp1)
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">My Requests</h2>
-            @endif
+
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Pending Orders</h2>
+
             <!-- Ads List -->
             @if ($order != null && count($order) > 0)
                 <ul class="space-x-6 flex flex-nowrap overflow-x-scroll">
                     @foreach ($order as $or)
-                        @if ($or->paymentStatus == 'Unpaid')
+                        @if (($or->paymentStatus == 'Paid' || $or->paymentStatus == 'COD') && $or->isCompleted == 0)
                             @php
                                 $prod = Posts::where('id', '=', $or->productId)->first();
                                 $user = User::where('email', '=', $or->orderedBy)->first();
@@ -79,40 +76,21 @@
                                         </div>
                                     </div>
                                     @if ($temp2)
-                                        <div class="mt-4 flex justify-around">
-                                            @if ($or->isAccepted == 0)
-                                                <form action="{{ route('accept.order', $or->id) }}" method="POST">
+                                        <div class="mt-4 flex flex-col">
+                                            <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
+
+                                            <div class="flex justify-center w-full mt-4">
+                                                <form action="{{ route('complete.order', $or->id) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button class="text-indigo-500 hover:underline">Accept</button>
+                                                    <button class="text-indigo-500 hover:underline">Complete</button>
                                                 </form>
-
-                                                <form action="{{ route('reject.order', $or->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button class="text-red-500 hover:underline">Reject</button>
-                                                </form>
-                                            @else
-                                                <h2 class="text-indigo-500">Payment Pending...</h2>
-                                            @endif
+                                            </div>
                                         </div>
                                     @endif
                                     @if ($temp1)
-                                        <div class="mt-4 flex justify-around">
-                                            @if ($or->isAccepted == 1)
-                                                <a href="{{ route('payment.select', $or->id) }}"
-                                                    class="text-indigo-500 hover:underline">Pay</a>
-                                            @else
-                                                <a href="{{ route('edit.order.view', $or->id) }}"
-                                                    class="text-indigo-500 hover:underline">Edit</a>
-
-
-                                                <form action="{{ route('delete.order', $or->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button class="text-red-500 hover:underline">Delete</button>
-                                                </form>
-                                            @endif
+                                        <div class="mt-4 flex justify-start">
+                                            <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -120,7 +98,7 @@
                         @else
                             <!-- No Orders Message -->
                             <div class="mt-6 p-8 rounded-lg border border-gray-200 flex items-center justify-center">
-                                <p class="text-lg font-semibold text-gray-800">No new requests at the moment.</p>
+                                <p class="text-lg font-semibold text-gray-800">No pending orders at the moment.</p>
                             </div>
                         @endif
                     @endforeach
@@ -128,7 +106,7 @@
             @else
                 <!-- No Orders Message -->
                 <div class="mt-6 p-8 rounded-lg border border-gray-200 flex items-center justify-center">
-                    <p class="text-lg font-semibold text-gray-800">No new requests at the moment.</p>
+                    <p class="text-lg font-semibold text-gray-800">No pending orders at the moment.</p>
                 </div>
             @endif
         </div>

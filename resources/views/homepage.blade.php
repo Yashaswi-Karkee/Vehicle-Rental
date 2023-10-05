@@ -55,16 +55,16 @@
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Profile</a>
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Order Requests</a>
-                                <a href="{{ route('show.requests') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Pending Orders</a>
                             @else
                                 <a href="{{ route('show.requests') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">My
                                     Requests</a>
-                                <a href="{{ route('show.requests') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Pending
-                                    Delivery</a>
                             @endif
+                            <a href="{{ route('show.pending.order') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Pending
+                                Delivery</a>
+                            <a href="{{ route('show.order.history') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Order History</a>
                             <a href="{{ route('settings') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100">Settings</a>
 

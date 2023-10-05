@@ -38,7 +38,9 @@
                     </div>
                     <div class="flex justify-center flex-col items-center">
                         <h2 class="text-xl font-semibold text-gray-800">{{ $data->name }}</h2>
-                        <p class="text-gray-600">{{ $data->email }}</p>
+                        <p class="text-gray-600 "><a href="mailto:{{ $data->email }}"
+                                class="hover:underline">{{ $data->email }}
+                            </a></p>
                     </div>
                 </div>
                 <div class="mb-6">
@@ -46,8 +48,10 @@
                     <!-- Phone Icon -->
                     <p class="text-gray-600"><i class="fas fa-phone text-indigo-500 mr-2"></i>{{ $data->contact }}</p>
                     <!-- Address Icon -->
-                    <p class="text-gray-600"><i
-                            class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>{{ $data->address }}</p>
+                    <p class="text-gray-600"><i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i><a
+                            href="https://www.google.com/maps?q={{ $data->latitude }},{{ $data->longitude }}"
+                            class="hover:underline">{{ $data->address }}
+                        </a></p>
                 </div>
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Address</h3>
@@ -61,7 +65,7 @@
             </div>
             <!-- Ride Request Content -->
             <div id="rideRequestContent" class="w-full pl-4" style="display: none;height:90vh ">
-                <h3 class="text-lg font-semibold text-gray-800 mb-8 mt-4">My Posts</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-8 mt-4">Posts</h3>
                 @if ($temp1 == 1)
                     <p class="text-gray-600 mb-4">No posts found.</p>
                 @else
@@ -133,7 +137,7 @@
             <!-- Toggle Button (Switch between Profile and Ride Requests) -->
             <button
                 class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-2"
-                id="toggle">My Posts</button>
+                id="toggle">View Posts</button>
         </div>
 
         <!-- JavaScript to Toggle Profile and Ride Requests -->
@@ -146,7 +150,7 @@
                 const rideRequestContent = document.querySelector('#rideRequestContent');
 
                 // Toggle visibility of Profile and Ride Requests
-                if (toggle.innerHTML === 'My Posts') {
+                if (toggle.innerHTML === 'View Posts') {
                     profileContent.style.display = 'none';
                     rideRequestContent.style.display = 'block';
                     toggle.innerHTML = "View Profile";
