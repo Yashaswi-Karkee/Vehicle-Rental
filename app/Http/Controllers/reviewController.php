@@ -14,11 +14,14 @@ class reviewController extends Controller
     {
         $order = Order::where('id', $id)->first();
         $user = User::where('email', $order->orderedBy)->first();
-        $review = Review::where('UserID', $user->id)->first();
-        if ($review == null) {
+        $review = Review::where('UserID', $user->id)->get();
+        if (count($review) >= 0) {
+            foreach ($review as $re) {
+                if ($re->OrderID == $id) {
+                    return back()->with('fail', 'Already reviewed this product');
+                }
+            }
             return view('review.writeReview', compact('id'));
-        } else {
-            return back()->with('fail', 'Already reviewed this product');
         }
     }
     //Post Review
@@ -32,6 +35,7 @@ class reviewController extends Controller
         $review->postId = $order->productId;
         $review->UserID = $user->id;
         $review->rating = $request->rating;
+        $review->orderID = $id;
         $review->save();
         return redirect()->to(route('show.order.history'))->with('success', 'Review Created!');
     }
