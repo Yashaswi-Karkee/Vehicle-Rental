@@ -33,20 +33,27 @@
         <div class="flex justify-between items-center">
 
             <!-- Brand Logo -->
-            <a href="{{ route('homepage') }}" class="text-2xl font-semibold text-gray-800">Dashboard</a>
+            <a href="{{ route('homepage') }}" class="ml-8">
+                <img src="{{ asset('Logo/ORVS.png') }}" alt="Logo" style="width: 70px">
+            </a>
+            {{-- <a href="{{ route('homepage') }}" class="text-2xl font-semibold text-gray-800">Dashboard</a> --}}
 
             @if ($data != null)
                 <!-- User Avatar and Dropdown -->
                 <div class="relative inline-block text-left">
-                    <button type="button" class="focus:outline-none" id="avatarButton">
-                        @if ($data->latitude)
-                            <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
-                                class="w-12 h-12 rounded-full border">
-                        @else
-                            <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
-                                class="w-12 h-12 rounded-full border">
-                        @endif
-                    </button>
+                    <div class="flex flex-row items-center gap-4 mr-8">
+                        <button type="button" class="focus:outline-none" id="avatarButton">
+                            @if ($data->latitude)
+                                <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
+                                    class="w-12 h-12 rounded-full border">
+                            @else
+                                <img src="{{ asset('profile_pictures/' . $data->profile_pic) }}" alt="User Avatar"
+                                    class="w-12 h-12 rounded-full border">
+                            @endif
+                        </button>
+                        <p class="text-md text-indigo-600">{{ $data->name }}</p>
+
+                    </div>
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                         style="display: none" id="options">
                         <div class="py-1">
@@ -150,7 +157,7 @@
                             $user = Agency::where('email', '=', $p->agencyEmail)->first();
                         @endphp
                         <!-- Sample Post -->
-                        <div class="m-2 bg-white rounded-lg shadow-md p-4 border w-full" style="width: 400px">
+                        <div class="m-2 bg-white rounded-lg shadow-md p-4 border w-full" style="width: 350px">
                             <img src="{{ asset('posts_pic/' . $p->pic) }}" alt="Post Image"
                                 class="w-full h-40 object-cover rounded-t-lg">
                             <div class="p-4">
@@ -195,22 +202,22 @@
                                 @if (!Session::has('loginEmail'))
                                     <div class="flex justify-between">
                                         <a href="{{ route('login') }}"
-                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 mr-4 mt-8">
                                             Order
                                         </a>
                                         <a href="{{ route('login') }}"
-                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            class="bg-indigo-500 text-white w-6/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 mt-8">
                                             View Reviews
                                         </a>
                                     </div>
                                 @else
                                     <div class="flex justify-between">
                                         <a href="{{ route('order.get', [$p->id, Session::get('loginEmail'), $p->agencyEmail]) }}"
-                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 mt-8 mr-4">
                                             Order
                                         </a>
                                         <a href="{{ route('post.description', $p->id) }}"
-                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 mt-8">
+                                            class="bg-indigo-500 text-white w-5/12 text-center hover:bg-indigo-600 transition duration-300 rounded-full py-2 mt-8">
                                             View Reviews
                                         </a>
                                     </div>
@@ -223,24 +230,60 @@
         </div>
     </main>
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-4">
-        <div class="container mx-auto text-center">
-            <p class="text-lg">Contact Us:</p>
+    <footer class="bg-gray-500 text-white w-screen flex flex-col">
+        <div class="w-full flex flex-row">
+            <div class="w-1/2 flex justify-center">
+                <img src="{{ asset('Logo/LogoGray.png') }}" alt="Logo" style="width: 200px; height:170px;">
+            </div>
+            <div class="w-1/2 p-4">
+                <p class="text-lg mb-4">Contact Us:</p>
 
-            <p class="text-md"><a href="mailto:hello@example.com" class="hover:underline">
-                    hello@example.com
-                </a>
-            </p>
-            <p class="text-md"><a href="tel:9812345678" class="hover:underline">
-                    9812345678
-                </a>
-            </p>
-            <p class="text-md"><a href="https://www.google.com/maps?q=27.7307544,85.3468015"
-                    class="hover:underline">Sukedhara, Kathmandu
-                </a></p>
+                <div class="text-md">
+                    <a href="mailto:hello@example.com" class="hover:underline">
+                        <i class="fas fa-envelope mr-2"></i> hello@example.com
+                    </a>
+                </div>
+                <div class="text-md">
+                    <a href="tel:9812345678" class="hover:underline">
+                        <i class="fas fa-phone mr-2"></i> 9812345678
+                    </a>
+                </div>
+                <div class="text-md">
+                    <a href="https://www.google.com/maps?q=27.7307544,85.3468015" class="hover:underline">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Sukedhara, Kathmandu
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="w-full flex justify-center items-center py-2 bg-gray-600">
             <p class="text-sm">&copy; 2023 Online Vehicle Rental System</p>
         </div>
+        {{-- <div class="text-center w-full">
+            <div class="border p-4 w-full">
+                <p class="text-lg">Contact Us:</p>
+
+                <div class="flex items-center justify-center text-md">
+                    <a href="mailto:hello@example.com" class="hover:underline">
+                        <i class="fas fa-envelope mr-2"></i> hello@example.com
+                    </a>
+                </div>
+                <div class="flex items-center justify-center text-md">
+                    <a href="tel:9812345678" class="hover:underline">
+                        <i class="fas fa-phone mr-2"></i> 9812345678
+                    </a>
+                </div>
+                <div class="flex items-center justify-center text-md">
+                    <a href="https://www.google.com/maps?q=27.7307544,85.3468015" class="hover:underline">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Sukedhara, Kathmandu
+                    </a>
+                </div>
+            </div>
+            <div class="border bg-gray-600 w-full">
+                <p class="text-sm mt-4">&copy; 2023 Online Vehicle Rental System</p>
+            </div>
+        </div> --}}
     </footer>
+
 </body>
 <script type="text/javascript">
     const avtButton = document.querySelector("#avatarButton");

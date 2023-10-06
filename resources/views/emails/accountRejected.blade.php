@@ -2,7 +2,8 @@
     <table role="presentation" cellspacing="0" cellpadding="0" width="100%">
         <tr>
             <td style="padding: 20px 0; text-align: center;">
-                <img src="#" alt="Logo" width="150" height="150" style="display: block; margin: 0 auto;">
+                <img src="{{ asset('Logo/ORVS.png') }}" alt="Logo" width="150" height="150"
+                    style="display: block; margin: 0 auto;">
             </td>
         </tr>
         <tr>
