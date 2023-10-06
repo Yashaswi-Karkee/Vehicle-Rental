@@ -836,6 +836,10 @@ class CustomizedController extends Controller
         $table->paymentStatus = "Unpaid";
         // Save the Order instance to the database
         $table->save();
+        Mail::send('emails.orderCreated', [], function ($message) use ($agencyEmail) {
+            $message->to($agencyEmail);
+            $message->subject('Order Request Received');
+        });
 
         return back()->with('success', 'Order placed successfully');
 
