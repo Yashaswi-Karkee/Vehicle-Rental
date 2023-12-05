@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <style>
-        /* Custom CSS for better UI */
         .star-rating {
             color: #FFD700;
             /* Gold color for stars */
@@ -123,7 +122,7 @@
                                     @endfor
                                     @for ($i = $rev->rating; $i < 5; $i++)
                                         <div class="star-rating text-gray-400">
-                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star text-gray-200"></i>
                                         </div>
                                     @endfor
                                 </div>

@@ -565,9 +565,11 @@ class CustomizedController extends Controller
 
         $temp1 = User::where('email', '=', $request->email)->first();
         $temp2 = Agency::where('email', '=', $request->email)->first();
+        $temp3 = Admin::where('email', '=', $request->email)->first();
 
 
-        if ($temp1 || $temp2) {
+
+        if ($temp1 || $temp2 || $temp3) {
 
             $token = Str::random(64);
             DB::table('password_reset_tokens')->insert([
@@ -595,6 +597,7 @@ class CustomizedController extends Controller
         ]);
         $temp1 = User::where('email', '=', $request->email)->first();
         $temp2 = Agency::where('email', '=', $request->email)->first();
+        $temp3 = Admin::where('email', '=', $request->email)->first();
 
         $data = DB::table('password_reset_tokens')->where([
             'email' => $request->email,
@@ -608,6 +611,11 @@ class CustomizedController extends Controller
         } else if ($data && $temp2) {
 
             Agency::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
+            DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
+            return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
+        } else if ($data && $temp3) {
+
+            Admin::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
             DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
             return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
         } else {
@@ -1072,10 +1080,10 @@ class CustomizedController extends Controller
         $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
         if ($temp1) {
             $temp2 = null;
-            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
+            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->where('paymentStatus', 'Unpaid')->get();
         } elseif ($temp2) {
             $temp1 = null;
-            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->where('paymentStatus', 'Unpaid')->get();
         }
         return view('requestList', compact('order', 'temp1', 'temp2'));
     }
@@ -1087,10 +1095,12 @@ class CustomizedController extends Controller
         $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
         if ($temp1) {
             $temp2 = null;
-            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
+            $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->where('isCompleted', '0');
+            $order = $order->where('paymentStatus', 'Paid')->orWhere('paymentStatus', 'COD')->get();
         } elseif ($temp2) {
             $temp1 = null;
-            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
+            $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->where('isCompleted', '0');
+            $order = $order->where('paymentStatus', 'Paid')->orWhere('paymentStatus', 'COD')->get();
         }
         return view('pendingOrders', compact('order', 'temp1', 'temp2'));
     }

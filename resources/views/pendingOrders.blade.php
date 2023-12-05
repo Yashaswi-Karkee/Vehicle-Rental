@@ -39,68 +39,61 @@
             @if ($order != null && count($order) > 0)
                 <ul class="space-x-6 flex flex-nowrap overflow-x-scroll">
                     @foreach ($order as $or)
-                        @if (($or->paymentStatus == 'Paid' || $or->paymentStatus == 'COD') && $or->isCompleted == 0)
-                            @php
-                                $prod = Posts::where('id', '=', $or->productId)->first();
-                                $user = User::where('email', '=', $or->orderedBy)->first();
-                                $agency = Agency::where('email', '=', $or->orderedFrom)->first();
-                            @endphp
-                            <!-- Ad Item -->
-                            <li class="border rounded-lg flex-shrink-0 p-2" style="width: 350px;">
-                                <div class="p-4">
-                                    <img class="w-full h-48 bg-cover bg-center"
-                                        src="{{ asset('posts_pic/' . $prod->pic) }}" alt="productImage" />
-                                    <!-- Product Details -->
-                                    <h3 class="text-lg font-semibold text-gray-800 mt-2">{{ $prod->title }}</h3>
-                                    <p class="text-sm text-gray-600">{{ $prod->description }}</p>
-                                    <!-- Order Summary -->
-                                    <div class="mt-4">
-                                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order Summary</h2>
-                                        <div class="flex flex-row">
+                        @php
+                            $prod = Posts::where('id', '=', $or->productId)->first();
+                            $user = User::where('email', '=', $or->orderedBy)->first();
+                            $agency = Agency::where('email', '=', $or->orderedFrom)->first();
+                        @endphp
+                        <!-- Ad Item -->
+                        <li class="border rounded-lg flex-shrink-0 p-2" style="width: 350px;">
+                            <div class="p-4">
+                                <img class="w-full h-48 bg-cover bg-center" src="{{ asset('posts_pic/' . $prod->pic) }}"
+                                    alt="productImage" />
+                                <!-- Product Details -->
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">{{ $prod->title }}</h3>
+                                <p class="text-sm text-gray-600">{{ $prod->description }}</p>
+                                <!-- Order Summary -->
+                                <div class="mt-4">
+                                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+                                    <div class="flex flex-row">
 
-                                            <div class="mr-8">
-                                                <p><strong>Ordered By:<br></strong> {{ $user->name }}</p>
-                                                <p><strong>Contact No:<br></strong> {{ $user->contact }}</p>
-                                                <p><strong>Ordered From:<br></strong> {{ $agency->name }}</p>
-                                                <p><strong>Pick-Up Date:<br></strong> {{ $or->pickUpDate }}</p>
-                                                <p><strong>Pick-Up Time:<br></strong> {{ $or->pickUpTime }} </p>
-                                            </div>
-                                            <div>
-                                                <p><strong>Pick-Up Location:<br></strong> {{ $or->pickUpLocation }}
-                                                </p>
-                                                <p><strong>Drop Date:<br></strong> {{ $or->dropDate }} </p>
-                                                <p><strong>Drop Time:<br></strong> {{ $or->dropTime }} </p>
-                                                <p><strong>Drop Location:<br></strong> {{ $or->dropLocation }}</p>
-                                                <p><strong>Total Price:<br></strong> {{ $or->totalPrice }}</p>
-                                            </div>
+                                        <div class="mr-8">
+                                            <p><strong>Ordered By:<br></strong> {{ $user->name }}</p>
+                                            <p><strong>Contact No:<br></strong> {{ $user->contact }}</p>
+                                            <p><strong>Ordered From:<br></strong> {{ $agency->name }}</p>
+                                            <p><strong>Pick-Up Date:<br></strong> {{ $or->pickUpDate }}</p>
+                                            <p><strong>Pick-Up Time:<br></strong> {{ $or->pickUpTime }} </p>
+                                        </div>
+                                        <div>
+                                            <p><strong>Pick-Up Location:<br></strong> {{ $or->pickUpLocation }}
+                                            </p>
+                                            <p><strong>Drop Date:<br></strong> {{ $or->dropDate }} </p>
+                                            <p><strong>Drop Time:<br></strong> {{ $or->dropTime }} </p>
+                                            <p><strong>Drop Location:<br></strong> {{ $or->dropLocation }}</p>
+                                            <p><strong>Total Price:<br></strong> {{ $or->totalPrice }}</p>
                                         </div>
                                     </div>
-                                    @if ($temp2)
-                                        <div class="mt-4 flex flex-col">
-                                            <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
-
-                                            <div class="flex justify-center w-full mt-4">
-                                                <form action="{{ route('complete.order', $or->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button class="text-indigo-500 hover:underline">Complete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    @if ($temp1)
-                                        <div class="mt-4 flex justify-start">
-                                            <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
-                                        </div>
-                                    @endif
                                 </div>
-                            </li>
-                        @else
-                            <!-- No Orders Message -->
-                            <div class="mt-6 p-8 rounded-lg border border-gray-200 flex items-center justify-center">
-                                <p class="text-lg font-semibold text-gray-800">No pending orders at the moment.</p>
+                                @if ($temp2)
+                                    <div class="mt-4 flex flex-col">
+                                        <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
+
+                                        <div class="flex justify-center w-full mt-4">
+                                            <form action="{{ route('complete.order', $or->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <button class="text-indigo-500 hover:underline">Complete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($temp1)
+                                    <div class="mt-4 flex justify-start">
+                                        <p><strong>Payment Status:</strong> {{ $or->paymentStatus }}</p>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
+                        </li>
                     @endforeach
                 </ul>
             @else
