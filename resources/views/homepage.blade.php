@@ -129,46 +129,51 @@
             <!-- Search Bar -->
             <div class="mb-1 w-full flex flex-col justify-end">
 
-                <div class="flex justify-end space-x-4 w-full">
-                    <!-- Vehicle Type Dropdown -->
-                    <div class="relative">
-                        <select
-                            class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring"
-                            id="vehicleType">
-                            <option value="cycle">Cycle</option>
-                            <option value="two-wheeler">Two-Wheeler</option>
-                            <option value="four-wheeler">Four-Wheeler</option>
-                        </select>
-                        <div
-                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path
-                                    d="M9.293 11.293a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414L10 12.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 010-1.414z" />
-                            </svg>
+                <form action="{{ route('search') }}" method="POST">
+                    <div class="flex justify-end space-x-4 w-full">
+                        @csrf
+                        <!-- Vehicle Type Dropdown -->
+                        <input type="text" name="query"
+                            class=" py-2 px-4 border rounded-md focus:ring focus:ring-indigo-300 focus:outline-none"
+                            placeholder="Search">
+                        <div class="relative">
+                            <select
+                                class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring"
+                                id="vehicleType" name="vehicleType">
+                                <option value="all">All</option>
+                                <option value="Cycle">Cycle</option>
+                                <option value="2WD">Two-Wheeler</option>
+                                <option value="4WD">Four-Wheeler</option>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Search Button -->
-                    <button
-                        class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
-                        Search
-                    </button>
-                    <!-- Filter Button -->
-                    <button onclick="toggleFilterOptions()"
+                        <!-- Search Button -->
+
+                        <button
+                            class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4">
+                            Search
+                        </button>
+                        <!-- Filter Button -->
+                        {{-- <button onclick="toggleFilterOptions()"
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4"
                         id="filterButton">Filter<i class="fas fa-filter ml-2"></i>
-                    </button>
-                </div>
+                    </button> --}}
+                    </div>
+                </form>
             </div>
 
             <!-- Filter Options (Initially Hidden) -->
-            <div class="flex justify-end w-full">
+            {{-- <div class="flex justify-end w-full">
                 <div class="filter-options pt-4 pl-4" id="filterOptions">
                     <!-- Add your filter options here as anchor tags -->
                     <a class="block mb-2">Nearest first</a>
                     <a href="#" class="block mb-2">Option 2</a>
                     <!-- Add more filter options as needed -->
                 </div>
-            </div>
+            </div> --}}
 
 
 

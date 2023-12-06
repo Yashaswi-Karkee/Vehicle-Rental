@@ -44,29 +44,61 @@ class CustomizedController extends Controller
     //HomePage View
     public function homepage()
     {
-        $data = array();
-        $check = array();
-        $count = 0;
-        $check = Posts::first();
-        if (is_null($check)) {
-            $temp = 1;
-            $post = null;
-        } else {
-            $temp = 0;
-            // $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
-            $post = Posts::get();
-        }
-        $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
-        $data = User::where('email', '=', Session::get('loginEmail'))->first();
-        if ($data) {
-            return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
-        } else {
-            $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
+        if (Session::has('result')) {
+            $result = Session::get('result');
+            Session::pull('result');
+            $data = array();
+            $check = array();
+            $count = 0;
+            $check = Posts::first();
+            if (is_null($check)) {
+                $temp = 1;
+                $post = null;
+            } else {
+                $temp = 0;
+                // $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
+                $post = $result;
+            }
+            $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
+            $data = User::where('email', '=', Session::get('loginEmail'))->first();
             if ($data) {
                 return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
             } else {
-                $data = null;
-                return view('homepage', compact('data', 'temp', 'post'));
+                $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
+                if ($data) {
+                    return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
+                } else {
+                    $data = null;
+                    return view('homepage', compact('data', 'temp', 'post'));
+                }
+            }
+
+        } else {
+
+            $data = array();
+            $check = array();
+            $count = 0;
+            $check = Posts::first();
+            if (is_null($check)) {
+                $temp = 1;
+                $post = null;
+            } else {
+                $temp = 0;
+                // $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
+                $post = Posts::get();
+            }
+            $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
+            $data = User::where('email', '=', Session::get('loginEmail'))->first();
+            if ($data) {
+                return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
+            } else {
+                $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
+                if ($data) {
+                    return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
+                } else {
+                    $data = null;
+                    return view('homepage', compact('data', 'temp', 'post'));
+                }
             }
         }
 

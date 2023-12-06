@@ -3,6 +3,7 @@
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\postController;
 use App\Http\Controllers\reviewController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomizedController;
 
@@ -27,9 +28,10 @@ Route::get('/', [CustomizedController::class, 'homepage'])->name('homepage');
 Route::get('/notification', [CustomizedController::class, 'notificationShow'])->name('show.notification');
 
 
-//Route for filters
-Route::get('/filter={val}', [CustomizedController::class, 'filteringPost'])->name('product.filter.post');
-Route::post('/filter={val}', [CustomizedController::class, 'filteringGet'])->name('product.filter.get');
+//Route for search
+// Route::get('/filter={val}', [CustomizedController::class, 'filteringPost'])->name('product.filter.post');
+// Route::post('/filter={val}', [CustomizedController::class, 'filteringGet'])->name('product.filter.get');
+Route::post('/search', [SearchController::class, 'search'])->name('search');
 
 
 
