@@ -50,7 +50,7 @@ class CustomizedController extends Controller
             $data = array();
             $check = array();
             $count = 0;
-            $check = Posts::first();
+            $check = $result;
             if (is_null($check)) {
                 $temp = 1;
                 $post = null;
