@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Posts;
+use App\Models\Notification;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class CustomizedController extends Controller
     {
         $data = array();
         $check = array();
+        $count = 0;
         $check = Posts::first();
         if (is_null($check)) {
             $temp = 1;
@@ -54,13 +56,14 @@ class CustomizedController extends Controller
             // $post = Posts::leftJoin('agencies', 'agencies.email', '=', 'agencyEmail')->get();
             $post = Posts::get();
         }
+        $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
         $data = User::where('email', '=', Session::get('loginEmail'))->first();
         if ($data) {
-            return view("homepage", compact('data', 'temp', 'post'));
+            return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
         } else {
             $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
             if ($data) {
-                return view("homepage", compact('data', 'temp', 'post'));
+                return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
             } else {
                 $data = null;
                 return view('homepage', compact('data', 'temp', 'post'));
@@ -69,6 +72,23 @@ class CustomizedController extends Controller
 
     }
 
+
+
+
+
+    //Notification Display
+    public function notificationShow()
+    {
+        $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
+        foreach ($notification as $notify) {
+            if ($notify->isRead == 0) {
+                $notify->isRead = 1;
+                $notify->update();
+            }
+        }
+        return view('notification.notification', compact('notification'));
+
+    }
 
 
 
@@ -685,6 +705,9 @@ class CustomizedController extends Controller
             $post->longitude = $temp1->longitude;
 
             $post->save();
+            $message = "You created a post";
+            $email = Session::get('loginEmail');
+            Notification::notify($message, $email, "System");
             return back()->with('success', 'Post Created!');
 
         } else {
@@ -738,6 +761,9 @@ class CustomizedController extends Controller
             $temp1->quantity = $request->quantity;
 
             $temp1->update();
+            $message = "You updated your post";
+            $email = Session::get('loginEmail');
+            Notification::notify($message, $email, "System");
             return back()->with('success', 'Post Updated!');
 
         } else {
@@ -755,6 +781,10 @@ class CustomizedController extends Controller
         if ($post) {
 
             $post->delete();
+
+            $message = "You deleted your post";
+            $email = Session::get('loginEmail');
+            Notification::notify($message, $email, "System");
             return back()->with('success', 'Post Deleted!');
         } else {
 
@@ -849,6 +879,9 @@ class CustomizedController extends Controller
             $message->subject('Order Request Received');
         });
 
+        $message = "You have received a new order";
+        Notification::notify($message, $agencyEmail, "System");
+
         return back()->with('success', 'Order placed successfully');
 
 
@@ -866,6 +899,7 @@ class CustomizedController extends Controller
     {
         $order = Order::where('id', $id)->first();
         $post = Posts::where('id', $order->productId)->first();
+        $user = User::where('email', $userEmail)->first();
         if ($request->paymentMethod == 'esewa') {
 
             // Set success and failure callback URLs.
@@ -910,6 +944,8 @@ class CustomizedController extends Controller
             $order = Order::where('id', '=', $id)->first();
             $order->paymentStatus = "COD";
             $order->update();
+            $message = $user->name . " has set the payment method to COD for the product " . $post->title;
+            Notification::notify($message, $agencyEmail, $userEmail);
             return back()->with('success', 'Payment Status set to COD');
         } else {
             return back()->with('fail', 'Error Occured');
@@ -921,8 +957,12 @@ class CustomizedController extends Controller
     {
         $id = $_GET['pid'];
         $order = Order::where('id', '=', $id)->first();
+        $user = User::where('email', $order->orderedBy)->first();
+        $post = Posts::where('id', $order->productId)->first();
         $order->paymentStatus = "Paid";
         $order->update();
+        $message = $user->name . " has made payment for the product " . $post->title;
+        Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return view('successPage');
     }
 
@@ -935,8 +975,12 @@ class CustomizedController extends Controller
     public function stripeSuccess($id)
     {
         $order = Order::where('id', '=', $id)->first();
+        $user = User::where('email', $order->orderedBy)->first();
+        $post = Posts::where('id', $order->productId)->first();
         $order->paymentStatus = "Paid";
         $order->update();
+        $message = $user->name . " has made payment for the product " . $post->title;
+        Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return view('successPage');
     }
 
@@ -959,6 +1003,9 @@ class CustomizedController extends Controller
         $order->delete();
         $post->quantity = $post->quantity + 1;
         $post->update();
+        $user = User::where('email', $order->orderedBy)->first();
+        $message = $user->name . " has deleted the order with title " . $post->title;
+        Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return back()->with('success', 'Deleted Successfully');
     }
 
@@ -974,6 +1021,7 @@ class CustomizedController extends Controller
     public function editOrderPost(Request $request, $id)
     {
         $order = Order::where('id', '=', $id)->first();
+        $user = User::where('email', $order->orderedBy)->first();
         // Check if the user is an agency
         $agencyEmail = Agency::where('email', '=', Session::get('loginEmail'))->first();
         if ($agencyEmail) {
@@ -1004,6 +1052,8 @@ class CustomizedController extends Controller
 
             // Save the Order instance to the database
             $order->update();
+            $message = $user->name . " has updated the order details of " . $post->title;
+            Notification::notify($message, $order->orderedFrom, $order->orderedBy);
 
             return back()->with('success', 'Order Updated');
         } else {
@@ -1021,6 +1071,10 @@ class CustomizedController extends Controller
             $message->to($email);
             $message->subject('Order Verified');
         });
+        $user = Agency::where('email', $order->orderedFrom)->first();
+        $post = Posts::where('id', $order->productId)->first();
+        $message = $user->name . " has accepted the order for " . $post->title;
+        Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Accepted Order');
     }
 
@@ -1037,6 +1091,10 @@ class CustomizedController extends Controller
             $message->to($email);
             $message->subject('Order Rejected');
         });
+        $user = Agency::where('email', $order->orderedFrom)->first();
+        $post = Posts::where('id', $order->productId)->first();
+        $message = $user->name . " has rejected the order for " . $post->title;
+        Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Rejected Order');
     }
 
@@ -1051,6 +1109,11 @@ class CustomizedController extends Controller
             $message->to($email);
             $message->subject('Order Completed');
         });
+        $user = User::where('email', $order->orderedBy)->first();
+        $user1 = Agency::where('email', $order->orderedFrom)->first();
+        $post = Posts::where('id', $order->productId)->first();
+        $message = "Thank you " . $user->name . " for the order " . $post->title . " from " . $user1->name . ". Your order will be delivered today. Dont forget to leave a review. ";
+        Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Completed Order');
     }
 

@@ -23,6 +23,9 @@ use App\Http\Controllers\CustomizedController;
 //Route for homepage
 Route::get('/', [CustomizedController::class, 'homepage'])->name('homepage');
 
+//Route for notification
+Route::get('/notification', [CustomizedController::class, 'notificationShow'])->name('show.notification');
+
 
 //Route for filters
 Route::get('/filter={val}', [CustomizedController::class, 'filteringPost'])->name('product.filter.post');

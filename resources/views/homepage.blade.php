@@ -52,6 +52,32 @@
                             @endif
                         </button>
                         <p class="text-md text-indigo-600">{{ $data->name }}</p>
+                        <a href="{{ route('show.notification') }}">
+                            @if (!$notification->isEmpty())
+                                @foreach ($notification as $noti)
+                                    @if ($noti->isRead == 0)
+                                        @php
+                                            $count = 1;
+                                            break;
+                                        @endphp
+                                    @endif
+                                @endforeach
+                                @if ($count == 1)
+                                    <div id="notificationIcon" class="relative cursor-pointer">
+                                        <i class="fas fa-bell text-indigo-600 text-2xl"></i>
+                                        <div class="absolute h-3 w-3 bg-red-500 rounded-full top-0 right-0"></div>
+                                    </div>
+                                @else
+                                    <div id="notificationIcon" class="relative cursor-pointer">
+                                        <i class="fas fa-bell text-indigo-600 text-2xl"></i>
+                                    </div>
+                                @endif
+                            @else
+                                <div id="notificationIcon" class="relative cursor-pointer">
+                                    <i class="fas fa-bell text-indigo-600 text-2xl"></i>
+                                </div>
+                            @endif
+                        </a>
 
                     </div>
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
@@ -88,11 +114,13 @@
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 transition duration-300">Login</a>
                     <a href="{{ route('registrationUser') }}"
                         class="bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300 rounded-full py-2 px-4 transition duration-300">Register</a>
+
                 </div>
             @endif
 
         </div>
     </nav>
+
     <!-- Main Content -->
     <main class="p-12 grid grid-cols-1 justify-between min-h-screen">
 

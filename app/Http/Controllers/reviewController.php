@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Posts;
 use App\Models\Review;
+use App\Models\Notification;
+use App\Models\Agency;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -37,6 +39,10 @@ class reviewController extends Controller
         $review->rating = $request->rating;
         $review->orderID = $id;
         $review->save();
+
+        $post = Posts::where('id', $order->productId)->first();
+        $message = "You have received a review from " . $user->name . " for the product " . $post->title;
+        Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return redirect()->to(route('show.order.history'))->with('success', 'Review Created!');
     }
 }

@@ -12,6 +12,10 @@ return new class extends Migration {
     {
         Schema::create('notification', function (Blueprint $table) {
             $table->id();
+            $table->text('message');
+            $table->string('notification_from');
+            $table->string('notification_to');
+            $table->boolean('isRead')->default(0);
             $table->timestamps();
         });
     }
