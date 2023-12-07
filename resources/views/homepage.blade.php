@@ -81,7 +81,7 @@
 
                     </div>
                     <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                        style="display: none" id="options">
+                        style="display: none; z-index:10" id="options">
                         <div class="py-1">
                             @if ($data->latitude)
                                 <a href="{{ route('user.profile.show', $data->email) }}"
@@ -273,12 +273,12 @@
 
                 <div class="text-md">
                     <a href="mailto:hello@example.com" class="hover:underline">
-                        <i class="fas fa-envelope mr-2"></i> hello@example.com
+                        <i class="fas fa-envelope mr-2"></i> yashaswi.karkee007@gmail.com
                     </a>
                 </div>
                 <div class="text-md">
                     <a href="tel:9812345678" class="hover:underline">
-                        <i class="fas fa-phone mr-2"></i> 9812345678
+                        <i class="fas fa-phone mr-2"></i> 9803546282
                     </a>
                 </div>
                 <div class="text-md">

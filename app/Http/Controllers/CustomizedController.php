@@ -31,8 +31,7 @@ require '../vendor/autoload.php';
 
 // use Stevebauman\Location\Facades\Location;
 
-class CustomizedController extends Controller
-{
+class CustomizedController extends Controller {
 
     // //Filtering options
     // public function filtering($latitude, $longitude)
@@ -42,16 +41,15 @@ class CustomizedController extends Controller
 
 
     //HomePage View
-    public function homepage()
-    {
-        if (Session::has('result')) {
+    public function homepage() {
+        if(Session::has('result')) {
             $result = Session::get('result');
             Session::pull('result');
             $data = array();
             $check = array();
             $count = 0;
             $check = $result->first();
-            if (is_null($check)) {
+            if(is_null($check)) {
                 $temp = 1;
                 $post = null;
             } else {
@@ -61,11 +59,11 @@ class CustomizedController extends Controller
             }
             $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
             $data = User::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data) {
+            if($data) {
                 return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
             } else {
                 $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
-                if ($data) {
+                if($data) {
                     return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
                 } else {
                     $data = null;
@@ -79,7 +77,7 @@ class CustomizedController extends Controller
             $check = array();
             $count = 0;
             $check = Posts::first();
-            if (is_null($check)) {
+            if(is_null($check)) {
                 $temp = 1;
                 $post = null;
             } else {
@@ -89,14 +87,17 @@ class CustomizedController extends Controller
             }
             $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
             $data = User::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data) {
+            if($data) {
                 return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
             } else {
                 $data = Agency::where('email', '=', Session::get('loginEmail'))->first();
-                if ($data) {
+                if($data) {
                     return view("homepage", compact('data', 'temp', 'post', 'notification', 'count'));
                 } else {
                     $data = null;
+                    if(Session::has('loginEmail')) {
+                        Session::pull('loginEmail');
+                    }
                     return view('homepage', compact('data', 'temp', 'post'));
                 }
             }
@@ -109,11 +110,10 @@ class CustomizedController extends Controller
 
 
     //Notification Display
-    public function notificationShow()
-    {
+    public function notificationShow() {
         $notification = Notification::where('notification_to', Session::get('loginEmail'))->orderBy('id', 'desc')->get();
-        foreach ($notification as $notify) {
-            if ($notify->isRead == 0) {
+        foreach($notification as $notify) {
+            if($notify->isRead == 0) {
                 $notify->isRead = 1;
                 $notify->update();
             }
@@ -140,15 +140,13 @@ class CustomizedController extends Controller
 
     // Login functions
     // Get Login view
-    public function login()
-    {
+    public function login() {
         return view("auth.loginPage");
     }
 
     //Logout function
-    public function logout()
-    {
-        if (Session::has('loginEmail')) {
+    public function logout() {
+        if(Session::has('loginEmail')) {
             Session::pull('loginEmail');
             return redirect()->to(route('homepage'))->with('success', 'Successfully logged out!');
         }
@@ -156,8 +154,7 @@ class CustomizedController extends Controller
     }
 
     //Login Verification
-    public function loginUser(Request $request)
-    {
+    public function loginUser(Request $request) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -166,17 +163,17 @@ class CustomizedController extends Controller
         $user = User::where('email', '=', $request->email)->first();
         $agency = Agency::where('email', '=', $request->email)->first();
         $admin = Admin::where('email', '=', $request->email)->first();
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
+        if($user) {
+            if(Hash::check($request->password, $user->password)) {
                 $request->session()->put('loginEmail', $user->email);
                 return redirect()->to(route('homepage'));
             } else {
                 return back()->with('fail', 'Password doesnot match');
             }
 
-        } elseif ($agency) {
-            if ($agency->isVerified == 1) {
-                if (Hash::check($request->password, $agency->password)) {
+        } elseif($agency) {
+            if($agency->isVerified == 1) {
+                if(Hash::check($request->password, $agency->password)) {
                     $request->session()->put('loginEmail', $agency->email);
                     return redirect()->to(route('homepage'));
                 } else {
@@ -185,8 +182,8 @@ class CustomizedController extends Controller
             } else {
                 return back()->with('fail', 'Your credentials are not verified by admin!');
             }
-        } else if ($admin) {
-            if (Hash::check($request->password, $admin->password)) {
+        } else if($admin) {
+            if(Hash::check($request->password, $admin->password)) {
                 $request->session()->put('loginEmail', $admin->email);
                 return redirect()->to(route('show.admin'));
             } else {
@@ -213,20 +210,17 @@ class CustomizedController extends Controller
 
     //Register User Functions
     //Register User view
-    public function registrationUser()
-    {
+    public function registrationUser() {
         return view("auth.registerUser");
     }
 
     //Register Agency view
-    public function registrationAgency()
-    {
+    public function registrationAgency() {
         return view("auth.registerAgency");
     }
 
     //Register User Verification
-    public function registerUser(Request $request): RedirectResponse
-    {
+    public function registerUser(Request $request): RedirectResponse {
 
         $request->validate([
             'name' => 'required',
@@ -237,10 +231,10 @@ class CustomizedController extends Controller
             'image' => 'required|mimes:png,jpg,jpeg,svg,gif|max:5048|image'
         ]);
 
-        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
+        if(User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
             return back()->with('fail', 'Email already taken');
         } else {
-            $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+            $newImgName = time()."-".$request->name.'.'.$request->image->extension();
 
             $request->image->move(public_path('profile_pictures'), $newImgName);
 
@@ -254,7 +248,7 @@ class CustomizedController extends Controller
             $user->profile_pic = $newImgName;
 
             $res = $user->save();
-            if ($res) {
+            if($res) {
                 return back()->with('success', 'You have registered successfully');
             } else {
                 return back()->with('fail', 'Something went wrong');
@@ -263,8 +257,7 @@ class CustomizedController extends Controller
     }
 
     //Register Agency Verification
-    public function registerAgency(Request $request)
-    {
+    public function registerAgency(Request $request) {
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -282,18 +275,18 @@ class CustomizedController extends Controller
         ]);
 
 
-        if (User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
+        if(User::where('email', '=', $request->email)->first() || Agency::where('email', '=', $request->email)->first() || Admin::where('email', '=', $request->email)->first()) {
             return back()->with('fail', 'Email already taken');
         } else {
-            $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+            $newImgName = time()."-".$request->name.'.'.$request->image->extension();
 
             $request->image->move(public_path('profile_pictures'), $newImgName);
 
-            $PANimg = time() . "-" . $request->name . '.' . $request->pan_image->extension();
+            $PANimg = time()."-".$request->name.'.'.$request->pan_image->extension();
 
             $request->pan_image->move(public_path('PANCard'), $PANimg);
 
-            $Registerimg = time() . "-" . $request->name . '.' . $request->registration_image->extension();
+            $Registerimg = time()."-".$request->name.'.'.$request->registration_image->extension();
 
             $request->registration_image->move(public_path('RegistrationCert'), $Registerimg);
 
@@ -313,7 +306,7 @@ class CustomizedController extends Controller
             $user->company_register_pic = $Registerimg;
 
             $res = $user->save();
-            if ($res) {
+            if($res) {
                 Mail::send('emails.agencyVerificationOnProgress', [], function ($message) use ($request) {
                     $message->to($request->email);
                     $message->subject('Agency Verification');
@@ -340,15 +333,14 @@ class CustomizedController extends Controller
 
     //Settings and Profile Functions
     //User Profile View
-    public function showUserProfile($email)
-    {
-        if (Session::has('loginEmail') && $email == Session::get('loginEmail')) {
+    public function showUserProfile($email) {
+        if(Session::has('loginEmail') && $email == Session::get('loginEmail')) {
             $temp2 = 1;
         } else {
             $temp2 = 0;
         }
         $check = Posts::where('agencyEmail', '=', $email)->first();
-        if (is_null($check)) {
+        if(is_null($check)) {
             $temp1 = 1;
             $post = null;
         } else {
@@ -356,7 +348,7 @@ class CustomizedController extends Controller
             $post = Posts::where('agencyEmail', '=', $email)->get();
         }
         $data = Agency::where('email', '=', $email)->first();
-        if ($data) {
+        if($data) {
             return view('userProfile', compact('data', 'temp1', 'temp2', 'post'));
         } else {
             return back()->with('fail', 'Some error occured!');
@@ -364,15 +356,14 @@ class CustomizedController extends Controller
     }
 
     //Show settings view
-    public function settings()
-    {
+    public function settings() {
         $data1 = array();
         $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
-        if ($data1) {
+        if($data1) {
             return view("auth.settings", compact('data1'));
         } else {
             $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data1) {
+            if($data1) {
                 return view("auth.settings", compact('data1'));
             }
         }
@@ -380,15 +371,14 @@ class CustomizedController extends Controller
     }
 
     //Edit and Update Profile Get
-    public function editProfile()
-    {
+    public function editProfile() {
         $data1 = array();
         $data1 = User::where('email', '=', Session::get('loginEmail'))->first();
-        if ($data1) {
+        if($data1) {
             return view("auth.profileEditUser", compact('data1'));
         } else {
             $data1 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-            if ($data1) {
+            if($data1) {
                 return view("auth.profileEditAgency", compact('data1'));
             }
         }
@@ -396,11 +386,10 @@ class CustomizedController extends Controller
     }
 
     //Update Profile POST
-    public function updateProfile(Request $request, $email)
-    {
+    public function updateProfile(Request $request, $email) {
         $temp1 = User::where('email', '=', $email)->first();
         $temp2 = Agency::where('email', '=', $email)->first();
-        if ($temp1) {
+        if($temp1) {
             $request->validate([
                 'name' => 'string|required',
                 'email' => 'email|required',
@@ -408,11 +397,11 @@ class CustomizedController extends Controller
                 'contact' => 'required|max:10',
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
             ]);
-            if ($request->hasFile('image')) {
+            if($request->hasFile('image')) {
                 $image_path = public_path("profile_pictures/{$temp1->profile_pic}");
 
                 // Check if the image file exists before attempting deletion
-                if (File::exists($image_path)) {
+                if(File::exists($image_path)) {
                     try {
                         // Delete the existing image
                         File::delete($image_path);
@@ -421,7 +410,7 @@ class CustomizedController extends Controller
                         return back()->with('fail', 'Error deleting the existing image.');
                     }
                 }
-                $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+                $newImgName = time()."-".$request->name.'.'.$request->image->extension();
                 $request->image->move(public_path('profile_pictures'), $newImgName);
                 $temp1->profile_pic = $newImgName;
             }
@@ -433,6 +422,8 @@ class CustomizedController extends Controller
             $temp1->address = $request->address;
 
             $temp1->update();
+            $message = "You have updated your profile";
+            Notification::notify($message, Session::get('loginEmail'), "System");
             return redirect()->to(route('settings'))->with('success', 'Details Changed!');
 
         } else {
@@ -446,12 +437,12 @@ class CustomizedController extends Controller
                 'latitude' => 'required',
                 'longitude' => 'required'
             ]);
-            if ($request->hasFile('image')) {
+            if($request->hasFile('image')) {
                 // Construct the full image path using public_path()
                 $image_path = public_path("profile_pictures/{$temp2->profile_pic}");
 
                 // Check if the image file exists before attempting deletion
-                if (File::exists($image_path)) {
+                if(File::exists($image_path)) {
                     try {
                         // Delete the existing image
                         File::delete($image_path);
@@ -462,14 +453,14 @@ class CustomizedController extends Controller
                 }
 
                 // Upload and save the new image
-                $newImgName = time() . "-" . $request->name . '.' . $request->image->extension();
+                $newImgName = time()."-".$request->name.'.'.$request->image->extension();
                 $request->image->move(public_path('profile_pictures'), $newImgName);
                 $temp2->profile_pic = $newImgName;
             }
 
             $posts = Posts::where('email', '=', $temp2->email)->get();
 
-            foreach ($posts as $post) {
+            foreach($posts as $post) {
                 $post->agencyEmail = $request->email;
                 $post->latitude = $request->latitude;
                 $post->longitude = $request->longitude;
@@ -484,6 +475,8 @@ class CustomizedController extends Controller
             $temp2->longitude = $request->longitude;
 
             $temp2->update();
+            $message = "You have updated your profile";
+            Notification::notify($message, Session::get('loginEmail'), "System");
             return redirect()->to(route('settings'))->with('success', 'Details Changed!');
 
         }
@@ -491,14 +484,16 @@ class CustomizedController extends Controller
     }
 
     //Delete Account
-    public function deleteAccount($email)
-    {
+    public function deleteAccount($email) {
         $user = User::where('email', '=', $email)->first();
-        if ($user) {
+        $order1 = Order::where('orderedBy', '=', $email)->first();
+        $order2 = Order::where('orderedFrom', '=', $email)->first();
+
+        if(($order1 && $user) || $user) {
             $image_path = public_path("profile_pictures/{$user->profile_pic}");
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($image_path)) {
+            if(File::exists($image_path)) {
                 try {
                     // Delete the existing image
                     File::delete($image_path);
@@ -506,6 +501,11 @@ class CustomizedController extends Controller
                     // Handle any exceptions that occur during deletion
                     return back()->with('fail', 'Error deleting the existing image.');
                 }
+            }
+            $order1 = Order::where('orderedBy', '=', $email)->get();
+            foreach($order1 as $ord) {
+                $ord->delete();
+
             }
             $user->delete();
             return redirect('logout');
@@ -515,7 +515,7 @@ class CustomizedController extends Controller
             $image_path = public_path("profile_pictures/{$user->profile_pic}");
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($image_path)) {
+            if(File::exists($image_path)) {
                 try {
                     // Delete the existing image
                     File::delete($image_path);
@@ -525,12 +525,12 @@ class CustomizedController extends Controller
                 }
             }
 
-            foreach ($post as $p) {
+            foreach($post as $p) {
 
                 $image_path = public_path("posts_pic/{$p->pic}");
 
                 // Check if the image file exists before attempting deletion
-                if (File::exists($image_path)) {
+                if(File::exists($image_path)) {
                     try {
                         // Delete the existing image
                         File::delete($image_path);
@@ -541,6 +541,13 @@ class CustomizedController extends Controller
                 }
                 $p->delete();
             }
+            if($order2) {
+                $order2 = Order::where('orderedFrom', '=', $email)->get();
+                foreach($order2 as $ord) {
+                    $ord->delete();
+
+                }
+            }
 
             $user->delete();
 
@@ -550,8 +557,7 @@ class CustomizedController extends Controller
 
 
     //Update password code
-    public function updatePassword(Request $request, $email)
-    {
+    public function updatePassword(Request $request, $email) {
         $request->validate([
             'current' => 'required',
             'password' => 'required|min:8|confirmed'
@@ -559,18 +565,22 @@ class CustomizedController extends Controller
         $temp1 = User::where('email', '=', $email)->first();
         $temp2 = Agency::where('email', '=', $email)->first();
 
-        if ($temp1) {
-            if (Hash::check($request->current, $temp1->password)) {
+        if($temp1) {
+            if(Hash::check($request->current, $temp1->password)) {
                 $temp1->password = Hash::make($request->password);
                 $temp1->update();
+                $message = "You have changed your password";
+                Notification::notify($message, Session::get('loginEmail'), "System");
                 return back()->with('success', 'Password Changed!');
             } else {
                 return back()->with('fail', 'Old Password is incorrect');
             }
         } else {
-            if (Hash::check($request->current, $temp2->password)) {
+            if(Hash::check($request->current, $temp2->password)) {
                 $temp2->password = Hash::make($request->password);
                 $temp2->update();
+                $message = "You have changed your password";
+                Notification::notify($message, Session::get('loginEmail'), "System");
                 return back()->with('success', 'Password Changed!');
             } else {
                 return back()->with('fail', 'Old Password is incorrect');
@@ -597,20 +607,17 @@ class CustomizedController extends Controller
 
     //Forget Password functions
     //Email Verifiation view
-    public function emailVerifyGet()
-    {
+    public function emailVerifyGet() {
         return view('auth.emailVerify');
     }
 
     //Password change view
-    public function passwordResetGet($token)
-    {
+    public function passwordResetGet($token) {
         return view('auth.changePassword', compact('token'));
     }
 
     //email verification for sending mail
-    public function emailVerifyPost(Request $request)
-    {
+    public function emailVerifyPost(Request $request) {
         $request->validate([
             'email' => 'required|email',
         ]);
@@ -621,7 +628,7 @@ class CustomizedController extends Controller
 
 
 
-        if ($temp1 || $temp2 || $temp3) {
+        if($temp1 || $temp2 || $temp3) {
 
             $token = Str::random(64);
             DB::table('password_reset_tokens')->insert([
@@ -641,8 +648,7 @@ class CustomizedController extends Controller
     }
 
     //Function to reset the password
-    public function passwordResetPost(Request $request)
-    {
+    public function passwordResetPost(Request $request) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
@@ -656,16 +662,16 @@ class CustomizedController extends Controller
             'token' => $request->token
         ])->first();
 
-        if ($data && $temp1) {
+        if($data && $temp1) {
             User::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
             DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
             return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
-        } else if ($data && $temp2) {
+        } else if($data && $temp2) {
 
             Agency::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
             DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
             return redirect()->to(route('login'))->with('success', 'Successfully changed password!');
-        } else if ($data && $temp3) {
+        } else if($data && $temp3) {
 
             Admin::where('email', '=', $request->email)->update(['password' => Hash::make($request->password)]);
             DB::table('password_reset_tokens')->where('email', '=', $request->email)->delete();
@@ -696,23 +702,20 @@ class CustomizedController extends Controller
 
     //Functions for Posts
     //Get view for Creating Posts
-    public function createPostGet($email)
-    {
+    public function createPostGet($email) {
         return view('posts.createPosts', compact('email'));
     }
 
     //Get view for Updating Post
-    public function updatePostGet($id)
-    {
+    public function updatePostGet($id) {
         $post = Posts::where('id', '=', $id)->first();
         return view('posts.updatePosts', compact('post'));
     }
 
     //Actual code to create a post
-    public function createPostPost(Request $request, $email)
-    {
+    public function createPostPost(Request $request, $email) {
         $temp1 = Agency::where('email', '=', $email)->first();
-        if ($temp1) {
+        if($temp1) {
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
@@ -722,7 +725,7 @@ class CustomizedController extends Controller
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image|required',
             ]);
 
-            $newImgName = time() . "-" . $request->title . '.' . $request->image->extension();
+            $newImgName = time()."-".$request->title.'.'.$request->image->extension();
             $request->image->move(public_path('posts_pic'), $newImgName);
             $post = new Posts();
 
@@ -751,10 +754,9 @@ class CustomizedController extends Controller
     }
 
     //Actual code to update post
-    public function updatePostPost(Request $request, $id)
-    {
+    public function updatePostPost(Request $request, $id) {
         $temp1 = Posts::where('id', '=', $id)->first();
-        if ($temp1) {
+        if($temp1) {
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
@@ -764,12 +766,12 @@ class CustomizedController extends Controller
                 'image' => 'mimes:png,jpg,jpeg,svg,gif|max:5048|image',
             ]);
 
-            if ($request->hasFile('image')) {
+            if($request->hasFile('image')) {
                 // Construct the full image path using public_path()
                 $image_path = public_path("posts_pic/{$temp1->pic}");
 
                 // Check if the image file exists before attempting deletion
-                if (File::exists($image_path)) {
+                if(File::exists($image_path)) {
                     try {
                         // Delete the existing image
                         File::delete($image_path);
@@ -780,7 +782,7 @@ class CustomizedController extends Controller
                 }
 
                 // Upload and save the new image
-                $newImgName = time() . "-" . $request->title . '.' . $request->image->extension();
+                $newImgName = time()."-".$request->title.'.'.$request->image->extension();
                 $request->image->move(public_path('posts_pic'), $newImgName);
                 $temp1->pic = $newImgName;
             }
@@ -807,10 +809,9 @@ class CustomizedController extends Controller
     }
 
     //Delete Posts
-    public function deletePosts($id)
-    {
+    public function deletePosts($id) {
         $post = Posts::where('id', '=', $id)->first();
-        if ($post) {
+        if($post) {
 
             $post->delete();
 
@@ -841,14 +842,12 @@ class CustomizedController extends Controller
 
     //Functions for order handling
     //Get order page
-    public function getOrderPage($id, $userEmail, $agencyEmail)
-    {
+    public function getOrderPage($id, $userEmail, $agencyEmail) {
         return view('orderPage', compact('id', 'userEmail', 'agencyEmail'));
     }
 
     // Post order page
-    public function postOrderPage(Request $request, $id, $userEmail, $agencyEmail)
-    {
+    public function postOrderPage(Request $request, $id, $userEmail, $agencyEmail) {
         $request->validate([
             'pickUpDate' => 'required|date|after:today',
             // Pick-Up Date must be today or in the future
@@ -857,15 +856,15 @@ class CustomizedController extends Controller
         ]);
         // Check if the user is an agency
         $check = Agency::where('email', $userEmail)->first();
-        if ($userEmail == $agencyEmail || $check) {
+        if($userEmail == $agencyEmail || $check) {
             return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
         }
 
 
         try {
             // Parse date and time inputs
-            $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
-            $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+            $pickupDateTime = Carbon::parse($request->input('pickUpDate').' '.$request->input('pickUpTime'));
+            $dropDateTime = Carbon::parse($request->input('dropDate').' '.$request->input('dropTime'));
         } catch (\Exception $e) {
             // Handle date parsing errors here, e.g., invalid date format
             return back()->with('fail', 'Invalid date or time');
@@ -873,7 +872,7 @@ class CustomizedController extends Controller
 
         // Calculate total days
         $totalDays = $pickupDateTime->diffInDays($dropDateTime);
-        if ($totalDays <= 0) {
+        if($totalDays <= 0) {
             return back()->with('fail', 'Invalid date!');
 
         }
@@ -881,7 +880,7 @@ class CustomizedController extends Controller
         // Calculate total price based on rate and total days
         $post = Posts::where('id', '=', $id)->first();
         $quantity = $post->quantity;
-        if ($quantity <= 0) {
+        if($quantity <= 0) {
             return back()->with('fail', 'Sorry the product is out of stock');
         }
         $rate = $post->rate;
@@ -920,19 +919,17 @@ class CustomizedController extends Controller
     }
 
     //Payment Selection Get
-    public function paymentSelection($id)
-    {
+    public function paymentSelection($id) {
         $order = Order::where('id', $id)->first();
         return view('paymentSelection', compact('order'));
     }
 
     //Payment Selection Post
-    public function paymentSelectionPost(Request $request, $id, $userEmail, $agencyEmail)
-    {
+    public function paymentSelectionPost(Request $request, $id, $userEmail, $agencyEmail) {
         $order = Order::where('id', $id)->first();
         $post = Posts::where('id', $order->productId)->first();
         $user = User::where('email', $userEmail)->first();
-        if ($request->paymentMethod == 'esewa') {
+        if($request->paymentMethod == 'esewa') {
 
             // Set success and failure callback URLs.
 
@@ -946,7 +943,7 @@ class CustomizedController extends Controller
             $esewa = new Client($config);
             $esewa->process($id, $order->totalPrice, 0, 0, 0);
 
-        } elseif ($request->paymentMethod == 'stripe') {
+        } elseif($request->paymentMethod == 'stripe') {
             $productItems = [];
 
             \Stripe\Stripe::setApiKey('sk_test_51Nx7ipHhFrhpubP1EePozGVEdvf6Gw2nmCLCF2RrXaJqtgp4g8GBCyDa6XRWbVNKhYv3zWy3dv6KUUjQJgv296UJ007XLZgDsX');
@@ -959,7 +956,7 @@ class CustomizedController extends Controller
                         'name' => $post->title,
                     ],
                     'currency' => 'NPR',
-                    'unit_amount' => $price . '00',
+                    'unit_amount' => $price.'00',
                 ],
                 'quantity' => $quantity
             ];
@@ -968,15 +965,15 @@ class CustomizedController extends Controller
                 'line_items' => [$productItems],
                 'mode' => 'payment',
                 'customer_email' => $userEmail,
-                'success_url' => url('/success/' . $id),
+                'success_url' => url('/success/'.$id),
                 'cancel_url' => url('/fail/', $id),
             ]);
             return redirect()->away($checkoutSession->url);
-        } elseif ($request->paymentMethod == 'COD') {
+        } elseif($request->paymentMethod == 'COD') {
             $order = Order::where('id', '=', $id)->first();
             $order->paymentStatus = "COD";
             $order->update();
-            $message = $user->name . " has set the payment method to COD for the product " . $post->title;
+            $message = $user->name." has set the payment method to COD for the product ".$post->title;
             Notification::notify($message, $agencyEmail, $userEmail);
             return back()->with('success', 'Payment Status set to COD');
         } else {
@@ -985,40 +982,36 @@ class CustomizedController extends Controller
     }
 
     //Esewa Success
-    public function esewaSuccess()
-    {
+    public function esewaSuccess() {
         $id = $_GET['pid'];
         $order = Order::where('id', '=', $id)->first();
         $user = User::where('email', $order->orderedBy)->first();
         $post = Posts::where('id', $order->productId)->first();
         $order->paymentStatus = "Paid";
         $order->update();
-        $message = $user->name . " has made payment for the product " . $post->title;
+        $message = $user->name." has made payment for the product ".$post->title;
         Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return view('successPage');
     }
 
     //Esewa failure
-    public function esewaFailure()
-    {
+    public function esewaFailure() {
         return view('failPage');
     }
     //Stripe Success
-    public function stripeSuccess($id)
-    {
+    public function stripeSuccess($id) {
         $order = Order::where('id', '=', $id)->first();
         $user = User::where('email', $order->orderedBy)->first();
         $post = Posts::where('id', $order->productId)->first();
         $order->paymentStatus = "Paid";
         $order->update();
-        $message = $user->name . " has made payment for the product " . $post->title;
+        $message = $user->name." has made payment for the product ".$post->title;
         Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return view('successPage');
     }
 
     //Stripe failure
-    public function stripeFailure($id)
-    {
+    public function stripeFailure($id) {
         // $order = Order::where('id', '=', $id)->first();
         // $post = Posts::where('id', '=', $order->productId)->first();
         // $order->delete();
@@ -1028,42 +1021,39 @@ class CustomizedController extends Controller
     }
 
     //Delete Order
-    public function deleteOrder($id)
-    {
+    public function deleteOrder($id) {
         $order = Order::where('id', '=', $id)->first();
         $post = Posts::where('id', '=', $order->productId)->first();
         $order->delete();
         $post->quantity = $post->quantity + 1;
         $post->update();
         $user = User::where('email', $order->orderedBy)->first();
-        $message = $user->name . " has deleted the order with title " . $post->title;
+        $message = $user->name." has deleted the order with title ".$post->title;
         Notification::notify($message, $order->orderedFrom, $order->orderedBy);
         return back()->with('success', 'Deleted Successfully');
     }
 
     //Edit Order view
-    public function editOrderView($id)
-    {
+    public function editOrderView($id) {
         $order = Order::where('id', '=', $id)->first();
         return view('updateOrder', compact('order'));
 
     }
 
     //Edit Order Post
-    public function editOrderPost(Request $request, $id)
-    {
+    public function editOrderPost(Request $request, $id) {
         $order = Order::where('id', '=', $id)->first();
         $user = User::where('email', $order->orderedBy)->first();
         // Check if the user is an agency
         $agencyEmail = Agency::where('email', '=', Session::get('loginEmail'))->first();
-        if ($agencyEmail) {
+        if($agencyEmail) {
             return back()->with('fail', 'Rental Agencies cannot order! Please use different credentials');
         }
-        if ($order->paymentStatus == "Unpaid") {
+        if($order->paymentStatus == "Unpaid") {
 
             // Parse date and time inputs
-            $pickupDateTime = Carbon::parse($request->input('pickUpDate') . ' ' . $request->input('pickUpTime'));
-            $dropDateTime = Carbon::parse($request->input('dropDate') . ' ' . $request->input('dropTime'));
+            $pickupDateTime = Carbon::parse($request->input('pickUpDate').' '.$request->input('pickUpTime'));
+            $dropDateTime = Carbon::parse($request->input('dropDate').' '.$request->input('dropTime'));
 
             // Calculate total days
             $totalDays = $pickupDateTime->diffInDays($dropDateTime);
@@ -1084,7 +1074,7 @@ class CustomizedController extends Controller
 
             // Save the Order instance to the database
             $order->update();
-            $message = $user->name . " has updated the order details of " . $post->title;
+            $message = $user->name." has updated the order details of ".$post->title;
             Notification::notify($message, $order->orderedFrom, $order->orderedBy);
 
             return back()->with('success', 'Order Updated');
@@ -1093,8 +1083,7 @@ class CustomizedController extends Controller
         }
     }
     //Accept Order
-    public function acceptOrder($id)
-    {
+    public function acceptOrder($id) {
         $order = Order::where('id', '=', $id)->first();
         $email = $order->orderedBy;
         $order->isAccepted = 1;
@@ -1105,14 +1094,13 @@ class CustomizedController extends Controller
         });
         $user = Agency::where('email', $order->orderedFrom)->first();
         $post = Posts::where('id', $order->productId)->first();
-        $message = $user->name . " has accepted the order for " . $post->title;
+        $message = $user->name." has accepted the order for ".$post->title;
         Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Accepted Order');
     }
 
     //Reject Order
-    public function rejectOrder($id)
-    {
+    public function rejectOrder($id) {
         $order = Order::where('id', '=', $id)->first();
         $email = $order->orderedBy;
         $post = Posts::where('id', '=', $order->productId)->first();
@@ -1125,14 +1113,13 @@ class CustomizedController extends Controller
         });
         $user = Agency::where('email', $order->orderedFrom)->first();
         $post = Posts::where('id', $order->productId)->first();
-        $message = $user->name . " has rejected the order for " . $post->title;
+        $message = $user->name." has rejected the order for ".$post->title;
         Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Rejected Order');
     }
 
     //Complete Order
-    public function completeOrder($id)
-    {
+    public function completeOrder($id) {
         $order = Order::where('id', '=', $id)->first();
         $email = $order->orderedBy;
         $order->isCompleted = 1;
@@ -1144,7 +1131,7 @@ class CustomizedController extends Controller
         $user = User::where('email', $order->orderedBy)->first();
         $user1 = Agency::where('email', $order->orderedFrom)->first();
         $post = Posts::where('id', $order->productId)->first();
-        $message = "Thank you " . $user->name . " for the order " . $post->title . " from " . $user1->name . ". Your order will be delivered today. Dont forget to leave a review. ";
+        $message = "Thank you ".$user->name." for the order ".$post->title." from ".$user1->name.". Your order will be delivered today. Dont forget to leave a review. ";
         Notification::notify($message, $order->orderedBy, $order->orderedFrom);
         return back()->with('success', 'Completed Order');
     }
@@ -1169,14 +1156,13 @@ class CustomizedController extends Controller
 
     //Request Functions
     //Requests get
-    public function showRequestList()
-    {
+    public function showRequestList() {
         $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
         $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-        if ($temp1) {
+        if($temp1) {
             $temp2 = null;
             $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->where('paymentStatus', 'Unpaid')->get();
-        } elseif ($temp2) {
+        } elseif($temp2) {
             $temp1 = null;
             $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->where('paymentStatus', 'Unpaid')->get();
         }
@@ -1184,15 +1170,14 @@ class CustomizedController extends Controller
     }
 
     //Pending Order Get
-    public function showPendingOrder()
-    {
+    public function showPendingOrder() {
         $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
         $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-        if ($temp1) {
+        if($temp1) {
             $temp2 = null;
             $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->where('isCompleted', '0');
             $order = $order->where('paymentStatus', 'Paid')->orWhere('paymentStatus', 'COD')->get();
-        } elseif ($temp2) {
+        } elseif($temp2) {
             $temp1 = null;
             $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->where('isCompleted', '0');
             $order = $order->where('paymentStatus', 'Paid')->orWhere('paymentStatus', 'COD')->get();
@@ -1201,15 +1186,15 @@ class CustomizedController extends Controller
     }
 
     //Show order History
-    public function showOrderHistory()
-    {
+    public function showOrderHistory() {
 
         $temp1 = User::where('email', '=', Session::get('loginEmail'))->first();
         $temp2 = Agency::where('email', '=', Session::get('loginEmail'))->first();
-        if ($temp1) {
+        if($temp1) {
             $temp2 = null;
             $order = Order::where('orderedBy', '=', Session::get('loginEmail'))->get();
-        } elseif ($temp2) {
+
+        } elseif($temp2) {
             $temp1 = null;
             $order = Order::where('orderedFrom', '=', Session::get('loginEmail'))->get();
         }

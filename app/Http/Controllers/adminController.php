@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\Order;
 use App\Models\Posts;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,10 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
-class adminController extends Controller
-{
-    public function showAdmin()
-    {
+class adminController extends Controller {
+    public function showAdmin() {
         $admin = Admin::all();
         $user = User::all();
         $agency = Agency::where('isVerified', 1)->get();
@@ -24,20 +23,18 @@ class adminController extends Controller
     }
 
     //Show pending accounts to be verified
-    public function showPendingRequests()
-    {
+    public function showPendingRequests() {
         $pend = 1;
         $agency = Agency::where('isVerified', 0)->get();
-        if (count($agency) == 0) {
+        if(count($agency) == 0) {
             $pend = null;
         }
         return view('pendingAdmin', compact('agency', 'pend'));
     }
 
     //Logout function
-    public function logoutAdmin()
-    {
-        if (Session::has('loginEmail')) {
+    public function logoutAdmin() {
+        if(Session::has('loginEmail')) {
             Session::pull('loginEmail');
             return redirect()->to(route('homepage'))->with('success', 'Successfully logged out!');
         }
@@ -45,14 +42,15 @@ class adminController extends Controller
     }
 
     //Delete Account
-    public function deleteAccount($email)
-    {
+    public function deleteAccount($email) {
         $user = User::where('email', '=', $email)->first();
-        if ($user) {
+        $order1 = Order::where('orderedBy', '=', $email)->first();
+        $order2 = Order::where('orderedFrom', '=', $email)->first();
+        if(($user && $order1) || $user) {
             $image_path = public_path("profile_pictures/{$user->profile_pic}");
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($image_path)) {
+            if(File::exists($image_path)) {
                 try {
                     // Delete the existing image
                     File::delete($image_path);
@@ -60,6 +58,11 @@ class adminController extends Controller
                     // Handle any exceptions that occur during deletion
                     return back()->with('fail', 'Error deleting the existing image.');
                 }
+            }
+            $order1 = Order::where('orderedBy', '=', $email)->get();
+            foreach($order1 as $ord) {
+                $ord->delete();
+
             }
             $user->delete();
             Mail::send('emails.accountDelete', [], function ($message) use ($email) {
@@ -74,10 +77,8 @@ class adminController extends Controller
             $pan_path = public_path("PANCard/{$user->PAN_pic}");
             $register_path = public_path("RegistrationCert/{$user->company_register_pic}");
 
-            dd(File::exists($pan_path));
-
             // Check if the image file exists before attempting deletion
-            if (File::exists($image_path)) {
+            if(File::exists($image_path)) {
                 try {
                     // Delete the existing image
                     File::delete($image_path);
@@ -88,8 +89,7 @@ class adminController extends Controller
             }
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($pan_path)) {
-                dd($pan_path);
+            if(File::exists($pan_path)) {
                 try {
                     // Delete the existing image
                     File::delete($pan_path);
@@ -100,7 +100,7 @@ class adminController extends Controller
             }
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($register_path)) {
+            if(File::exists($register_path)) {
                 try {
                     // Delete the existing image
                     File::delete($register_path);
@@ -110,12 +110,12 @@ class adminController extends Controller
                 }
             }
 
-            foreach ($post as $p) {
+            foreach($post as $p) {
 
                 $image_path = public_path("posts_pic/{$p->pic}");
                 $p->delete();
                 // Check if the image file exists before attempting deletion
-                if (File::exists($image_path)) {
+                if(File::exists($image_path)) {
                     try {
                         // Delete the existing image
                         File::delete($image_path);
@@ -126,6 +126,14 @@ class adminController extends Controller
                 }
 
             }
+            if($order2) {
+                $order2 = Order::where('orderedFrom', '=', $email)->get();
+                foreach($order2 as $ord) {
+                    $ord->delete();
+
+                }
+            }
+
 
             $user->delete();
             Mail::send('emails.accountDelete', [], function ($message) use ($email) {
@@ -133,15 +141,15 @@ class adminController extends Controller
                 $message->subject('Account Deleted');
             });
 
+
             return back()->with('success', 'Account Deleted Successfully');
         }
     }
 
     //Account Accept
-    public function acceptAccount($email)
-    {
+    public function acceptAccount($email) {
         $user = Agency::where('email', '=', $email)->first();
-        if ($user) {
+        if($user) {
             $user->isVerified = 1;
             $user->update();
             Mail::send('emails.accountVerified', [], function ($message) use ($email) {
@@ -154,16 +162,15 @@ class adminController extends Controller
     }
 
     //Account Reject
-    public function rejectAccount($email)
-    {
+    public function rejectAccount($email) {
         $user = Agency::where('email', '=', $email)->first();
-        if ($user) {
+        if($user) {
             $image_path = public_path("profile_pictures/{$user->profile_pic}");
             $pan_path = public_path("PANCard/{$user->PAN_pic}");
             $register_path = public_path("RegistrationCert/{$user->company_register_pic}");
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($image_path)) {
+            if(File::exists($image_path)) {
                 try {
                     // Delete the existing image
                     File::delete($image_path);
@@ -173,7 +180,7 @@ class adminController extends Controller
                 }
             }
             // Check if the image file exists before attempting deletion
-            if (File::exists($pan_path)) {
+            if(File::exists($pan_path)) {
                 try {
                     // Delete the existing image
                     File::delete($pan_path);
@@ -184,7 +191,7 @@ class adminController extends Controller
             }
 
             // Check if the image file exists before attempting deletion
-            if (File::exists($register_path)) {
+            if(File::exists($register_path)) {
                 try {
                     // Delete the existing image
                     File::delete($register_path);
